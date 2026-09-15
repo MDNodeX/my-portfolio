@@ -19,6 +19,7 @@ import { getEnv } from "@/helpers/getEnv";
 import { useParams } from "react-router-dom";
 import Loading from "@/components/Loading";
 import { useFetch } from "@/hooks/useFetch";
+import { Input } from "@/components/ui/input";
 
 const EditCategory = () => {
   const { category_id } = useParams();
@@ -97,7 +98,7 @@ const EditCategory = () => {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <input placeholder="Enter your name" {...field} />
+                        <Input placeholder="Enter your name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

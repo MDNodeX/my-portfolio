@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ContactForm from "@/components/contact-form";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
-import portfolios from "@/components/Portfolio";
+import LineAnimation from "@/components/ui/lineanimation";
 import { motion } from "motion/react";
 import {
   Mail,
@@ -12,14 +12,27 @@ import {
   Twitter,
   Github,
   Instagram,
+  Send,
 } from "lucide-react";
-
-import bgContact from "@/assets/images/bg-contact.png";
+import {
+  FaFacebookF,
+  FaLinkedinIn,
+  FaYoutube,
+  FaXTwitter,
+  FaGithub,
+  FaBehance,
+  FaInstagram,
+} from "react-icons/fa6";
 
 // import { Button } from "@/components/ui/button";
 import { FaServicestack } from "react-icons/fa";
 // import { RouteContact } from "@/helpers/RouteName";
-import { HeroSlider } from "@/components/HeroSlider";
+
+import Hero from "@/components/Hero.jsx";
+
+import { useDispatch, useSelector } from "react-redux";
+// import { fetchBlogs } from "@/redux/blog/blog.slice";
+import BlogCard from "@/components/BlogCard.jsx";
 import {
   Card,
   CardContent,
@@ -31,189 +44,100 @@ import {
 
 const contactItems = [
   {
-    icon: MapPin,
-    title: "Visit Our Office",
-    details: "123 Main Street, Dhaka, Bangladesh",
-    color: "bg-[#c8102e]/10 text-[#c8102e]",
+    label: "EMAIL",
+    value: "hello@wphridoy.com",
+    icon: Mail,
+    color: "text-blue-400",
+    bg: "bg-blue-500/15",
   },
   {
+    label: "CALL / WHATSAPP",
+    value: "+8801329 32 35 31",
     icon: Phone,
-    title: "Call & Contact",
-    details: "+880 1234 567890\ninfo@example.com",
-    color: "bg-white/10 text-white",
+    color: "text-emerald-400",
+    bg: "bg-emerald-400/15",
   },
   {
-    icon: Clock,
-    title: "Operating Hours",
-    details: "Mon-Fri: 09:00 - 20:00\nSat-Sun: 10:30 - 22:00",
-    color: "bg-white/10 text-white",
+    label: "LOCATION",
+    value: "Narsingdi, Dhaka, Bangladesh",
+    icon: MapPin,
+    color: "text-violet-400",
+    bg: "bg-violet-500/15",
   },
   {
+    label: "TIME ZONE",
+    value: "UTC+6 Asia/Dhaka",
     icon: Clock,
-    title: "Operating Hours",
-    details: "Mon-Fri: 09:00 - 20:00\nSat-Sun: 10:30 - 22:00",
-    color: "bg-white/10 text-white",
+    color: "text-amber-400",
+    bg: "bg-amber-500/15",
   },
 ];
 
 const socialLinks = [
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Github, href: "#", label: "GitHub" },
-  { icon: Instagram, href: "#", label: "Instagram" },
+  { label: "Facebook", href: "#", icon: FaFacebookF },
+  { label: "LinkedIn", href: "#", icon: FaLinkedinIn },
+  { label: "YouTube", href: "#", icon: FaYoutube },
+  { label: "X", href: "#", icon: FaXTwitter },
+  { label: "GitHub", href: "#", icon: FaGithub },
+  { label: "Behance", href: "#", icon: FaBehance },
+  { label: "Instagram", href: "#", icon: FaInstagram },
 ];
 
+//contact form fungtion
+
 const Index = () => {
+  // const dispatch = useDispatch();
+  // const { blogs } = useSelector((state) => state.blog);
+
+  // useEffect(() => {
+  //   dispatch(fetchBlogs());
+  // }, [dispatch]);
   // if (Loading) return <Loading />;
   return (
     <>
-      {/* Banner section */}
-      <section className="">
-        <HeroSlider />
-      </section>
+      {/* new bannar */}
+      <div className="animate-fade-in">
+        <Hero />
+      </div>
 
-      {/* service section */}
-      <section className="lg:py-20 py-10">
-        <h1 className="lg:text-4xl text-3xl font-extrabold text-black text-center">
-          What I will do ?
-        </h1>
-        <p className="text-lg text-center md:text-1xl text-[#334d5a] lg:w-[500px] px-10 mx-auto mt-5">
-          You don't have to struggle alone, you've got our assistance and help.
-          It's just not a service, it's a relationship...
-        </p>
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 lg:gap-10 gap-5 lg:px-20 px-5 my-10">
-          <Card>
-            <CardHeader className="gap-4">
-              {/* icon  */}
-              <div className="text-5xl text-[#c8102e] font-extrabold">
-                <FaServicestack />
-              </div>
-
-              <CardTitle className="text-2xl font-black text-[#003057] font-sans">
-                Create Full Website
-              </CardTitle>
-
-              <CardDescription className="text-lg md:text-1xl text-[#334d5a]">
-                I will create any type of website for your business, portfolio,
-                company, e-commerce store, blog, etc. I provide a unique, clean
-                & awesome graphical design interface.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-          <Card className="">
-            <CardHeader className="gap-4">
-              {/* icon  */}
-              <div className="text-5xl text-[#c8102e] font-extrabold">
-                <FaServicestack />
-              </div>
-
-              <CardTitle className="md:text-2xl font-black text-[#003057] font-sans">
-                E-commerce & shopping
-              </CardTitle>
-
-              <CardDescription className="text-lg md:text-1xl text-[#334d5a]">
-                Build a fully functional online store with any type of payment
-                gateway support and add shopping cart functionality into you’re
-                existing website.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-          <Card className="">
-            <CardHeader className="gap-4">
-              {/* icon  */}
-              <div className="text-5xl text-[#c8102e] font-extrabold">
-                <FaServicestack />
-              </div>
-
-              <CardTitle className="md:text-2xl font-black text-[#003057] font-sans">
-                Maintenance & Optimized
-              </CardTitle>
-
-              <CardDescription className="text-lg md:text-1xl text-[#334d5a]">
-                Website problem & bugs it’s a common problem for every website.
-                Don’t worry about bugs and problems. I can fix any type of
-                problems & bugs for any website.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-      </section>
-
-      {/* portfolio section */}
-      <section className="w-full lg:py-20 py-10 bg-[#F8FAFC]">
-        <div className="max-w-7xl mx-auto px-4 px-6 lg:px-8">
-          {/* Heading */}
-          <div className="text-center">
-            <h2 className="mb-10 text-3xl lg:text-4xl font-black text-[#0F172A]">
-              Recent Projects
-            </h2>
-          </div>
-
-          {/* Gallery Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {portfolios.map((portfolio) => (
-              <Card
-                key={portfolio.id}
-                className="group overflow-hidden border-0 rounded-2xl shadow-md bg-white py-0"
-              >
-                <CardContent className="p-0">
-                  {/* Image */}
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={portfolio.image}
-                      alt={portfolio.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-[300px] object-cover transform transition-transform duration-200 ease-out group-hover:scale-110 "
-                    />
-
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center "></div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-5">
-                    <h3 className="text-2xl font-bold text-[#0F172A]">
-                      {portfolio.title}
-                    </h3>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* blog post */}
+      {/* <section>
+        <BlogCard limit={3} blogs={blogs?.slice(0, 3)} />
+      </section> */}
 
       {/* testimonials section */}
       <section className="">
         <TestimonialsCarousel />
       </section>
       {/* contact section */}
-      <section className="relative min-h-screen w-full flex items-center justify-center lg:py-20 py-10 px-5 lg:px-10 overflow-hidden bg-primary">
-        {/* Dynamic Background */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src={bgContact}
-            alt="Premium Office Space"
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#020618]/95 via-[#020618]/80 to-[#c8102e]/20" />
-        </div>
+      <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+        {/* Ambient background glow — matches your other sections */}
+        <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
 
-        <div className="relative z-10 max-w-7xl w-full grid lg:grid-cols-12 gap-10 items-center">
-          {/* Left Column: Context & Info (7/12 area) */}
-          <div className="lg:col-span-7 space-y-10">
-            <div className="space-y-8">
+        {/* Faint grid texture */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+          }}
+        />
+
+        <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-10">
+          {/* Left Column: Context & Info */}
+          <div className="space-y-10 lg:col-span-7">
+            <div className="space-y-6">
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-[#c8102e]/10 border border-[#c8102e]/20 rounded-full"
+                className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2"
               >
-                <div className="w-2 h-2 bg-[#c8102e] rounded-full animate-pulse" />
-                <span className="text-[#c8102e] text-xs font-bold uppercase tracking-widest">
-                  Connect with Experts
+                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+                <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">
+                  Available for new projects
                 </span>
               </motion.div>
 
@@ -221,84 +145,93 @@ const Index = () => {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="space-y-6"
+                className="space-y-4"
               >
-                <h1 className="lg:text-5xl text-3xl font-display font-bold text-white leading-[1.1]">
-                  Let's Make Your <br />
-                  <span className="text-[#c8102e] underline decoration-white/10 underline-offset-8">
-                    Digital Vision
-                  </span>{" "}
-                  Reality.
-                </h1>
-                <p className="text-xl text-gray-400 max-w-2xl leading-relaxed">
-                  Your goals deserve a team that’s proven and ready to deliver.
-                  Discussion your challenges, explore tailored strategies, and
-                  take the next step.
+                <h2 className="text-3xl font-black leading-[1.1] text-white sm:text-4xl lg:text-5xl">
+                  Let's build something great
+                </h2>
+                <p className="max-w-lg text-base leading-relaxed text-slate-400 sm:text-lg">
+                  Tell me about your project and I'll get back to you within 24
+                  hours. Prefer a quick chat? Reach out on any channel below.
                 </p>
               </motion.div>
             </div>
 
             {/* Contact Details Grid */}
-            <div className="grid sm:grid-cols-2 gap-7">
-              {contactItems.map((item, index) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="group flex items-start gap-5"
-                >
-                  <div
-                    className={`p-5 rounded-2xl ${item.color} transition-all duration-500 group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(200,16,46,0.2)]`}
+            <div className="grid gap-4 sm:grid-cols-2">
+              {contactItems.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="group flex items-center gap-4 rounded-2xl border border-white/[0.06] bg-[#091424] p-4 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)]"
                   >
-                    <item.icon className="w-4 h-4" />
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="text-white font-bold text-lg">
-                      {item.title}
-                    </h4>
-                    <p className="text-gray-400 text-sm whitespace-pre-line leading-relaxed">
-                      {item.details}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
+                    <div
+                      className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl ${item.bg} ${item.color} transition-transform duration-300 group-hover:scale-110`}
+                    >
+                      <Icon className="h-4.5 w-4.5" />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+                        {item.label}
+                      </p>
+                      <p className="text-sm font-bold text-white sm:text-base">
+                        {item.value}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
 
             {/* Social Presence */}
-            <div className="pt-7 border-t border-white/5 space-y-6">
-              <h5 className="text-white/40 text-xs font-bold uppercase tracking-[0.3em]">
-                Our Social Presence
+            <div className="space-y-5 border-t border-white/10 pt-7">
+              <h5 className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400">
+                Follow
               </h5>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-3">
                 {socialLinks.map((social) => (
                   <motion.a
                     key={social.label}
-                    whileHover={{ y: -5 }}
+                    whileHover={{ y: -4 }}
                     href={social.href}
-                    className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-[#c8102e] hover:border-[#c8102e] transition-all duration-300"
                     aria-label={social.label}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-slate-300 transition-all duration-300 hover:border-emerald-400/40 hover:bg-emerald-400 hover:text-[#04342C]"
                   >
-                    <social.icon className="w-4 h-4" />
+                    <social.icon className="h-4 w-4" />
                   </motion.a>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Right Column: Premium Form Card (5/12 area) */}
-          <div className="lg:col-span-5 relative">
-            {/* Decorative Glowing Orbs */}
-            <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#c8102e]/10 blur-[100px] rounded-full" />
+          {/* Right Column: Form Card */}
+          <div className="lg:col-span-5">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
             >
               <ContactForm />
             </motion.div>
           </div>
+        </div>
+
+        <div className="w-full h-[400px] rounded-2xl overflow-hidden">
+          <iframe
+            src="https://www.google.com/maps?q=Dhaka,Bangladesh&output=embed"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Office Location"
+          />
         </div>
       </section>
     </>

@@ -17,6 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { showToast } from "@/helpers/showToast.js";
 import { getEnv } from "@/helpers/getEnv.js";
 import GoogleLogin from "@/components/GoogleLogin.jsx";
+import GithubLogin from "@/components/Githublogin.jsx";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -77,6 +78,7 @@ const SignUp = () => {
 
         <div>
           <GoogleLogin />
+          <GithubLogin />
           <div className="border-2 border-gray-300 mt-4">
             <span className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-gray-500 text-sm">
               Or continue with

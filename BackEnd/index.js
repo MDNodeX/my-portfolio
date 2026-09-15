@@ -20,15 +20,19 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(
-  // cors({
-  //   origin: process.env.FRONTEND_URL,
-  //   credentials: true,
-  // }),
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: [
+      "http://localhost:5173",
+      "https://swiftweb-production.up.railway.app",
+    ],
     credentials: true,
   }),
 );
+
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  next();
+});
 
 //routes
 app.use("/backend/auth", AuthRoute);

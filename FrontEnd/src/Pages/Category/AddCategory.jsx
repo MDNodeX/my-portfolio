@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -19,18 +20,16 @@ import { showToast } from "@/helpers/showToast";
 import { getEnv } from "@/helpers/getEnv";
 
 const AddCategory = () => {
-  // const formSchema = z
-  //   .object({
-  //     name: z.string().min(3, "Name must be at least 3 characters"),
-  //     slug: z.string().min(3, "slug must be at least 3 characters"),
-  //   })
-  //   .refine((data) => data.password === data.confirmPassword, {
-  //     message: "Passwords do not match",
-  //     path: ["confirmPassword"],
-  //   });
-
+  const formSchema = z.object({
+    name: z.string().min(3, "Name must be at least 3 characters"),
+    slug: z.string().min(3, "slug must be at least 3 characters"),
+  });
+  // .refine((data) => data.password === data.confirmPassword, {
+  //   message: "Passwords do not match",
+  //   path: ["confirmPassword"],
+  // });
   const form = useForm({
-    // resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       slug: "",

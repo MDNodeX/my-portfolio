@@ -1,14 +1,19 @@
-// he `tooltip` component has been added. Remember to wrap your app with the `TooltipProvider` component.
+You are helping me optimize the backend of my Node.js/Express + MySQL app.
 
-// ```tsx title="app/layout.tsx"
-// import { TooltipProvider } from "@/components/ui/tooltip"
+SCOPE: [fix routes folder]
 
-// export default function RootLayout({ children }: { children: React.ReactNode }) {
-//   return (
-//     <html lang="en">
-//       <body>
-//         <TooltipProvider>{children}</TooltipProvider>
-//       </body>
-//     </html>
-//   )
-// }
+Check and fix, in this order:
+1. Security — SQL injection (must use parameterized queries), missing input 
+   validation, missing auth/role checks on routes, hardcoded secrets, missing 
+   rate limiting, missing CORS config.
+2. Bugs — unhandled errors, missing try/catch, broken edge cases.
+3. Organization — enforce routes → controllers → services → data access 
+   separation; move duplicated logic into shared utilities.
+4. Performance — N+1 queries, missing indexes, missing connection pooling, 
+   unpaginated large result sets.
+
+Rules:
+- Don't change working logic just for style.
+- Flag any breaking change before making it.
+- Show me each fix with a short explanation and how to verify it, before 
+  moving to the next.

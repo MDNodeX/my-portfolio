@@ -4,8 +4,9 @@ export const RouteSignUp = "/sign-up";
 export const RouteProfile = "/profile";
 export const RouteCategoryDetails = "/categories";
 export const RouteAddCategory = "/category/add";
-export const RouteBlogSection = "/blog-section";
+export const RouteBlogPage = "/blog";
 export const RouteAbout = "/about";
+export const RouteProject = "/project";
 export const RouteContact = "/contact";
 export const RouteService = "/service";
 

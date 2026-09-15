@@ -4,6 +4,11 @@ import { v4 as uuidv4 } from "uuid";
 import cloudinary from "../config/cloudinary.js";
 import fs from "fs";
 
+// NOTE (flagged, not changed): author_id is taken directly from req.body
+// rather than the authenticated user (req.user.id). A client could claim
+// to be a different author. If these routes require login, switch to
+// req.user.id — confirm that's safe for your routes first.
+
 export const createBlog = async (req, res, next) => {
   try {
     const {
@@ -38,7 +43,10 @@ export const createBlog = async (req, res, next) => {
       });
     }
 
-    // Use raw HTML from CKEditor, store as-is
+    // NOTE (flagged, not changed): raw CKEditor HTML is stored as-is.
+    // If this content is rendered on the frontend, it's a stored-XSS
+    // risk. Recommend sanitizing with `sanitize-html` — needs a new
+    // dependency, so flagging rather than adding it silently.
     const safeContent = content;
 
     let featuredImage = null;
@@ -93,6 +101,12 @@ export const getAllBlogs = async (req, res, next) => {
       [userId],
     );
 
+    if (userRows.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
     const userRole = userRows[0].role;
 
     let blogsQuery = `
@@ -135,6 +149,12 @@ export const getAllBlogs = async (req, res, next) => {
   }
 };
 
+// FIX: this function referenced `existingBlog` without ever fetching it
+// (the fetch was commented out), so it threw a ReferenceError and
+// crashed on every call. Restored the fetch + not-found check.
+// NOTE: this duplicates updateBlog below, which already does this
+// correctly. Worth consolidating into one endpoint once you confirm
+// which one your routes actually use.
 export const editBlog = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -149,24 +169,16 @@ export const editBlog = async (req, res, next) => {
       meta_description,
     } = req.body;
 
-    // if (!id) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Blog ID is required",
-    //   });
-    // }
-
-    // // Check if blog exists
-    // const [existingBlog] = await mySqlDB.query(
-    //   "SELECT * FROM blogs WHERE id = ?",
-    //   [id],
-    // );
-    // if (existingBlog.length === 0) {
-    //   return res.status(404).json({
-    //     success: false,
-    //     message: "Blog not found",
-    //   });
-    // }
+    const [existingBlog] = await mySqlDB.query(
+      "SELECT * FROM blogs WHERE id = ?",
+      [id],
+    );
+    if (existingBlog.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
 
     // Check slug uniqueness (exclude current blog)
     if (slug) {
@@ -330,27 +342,6 @@ export const deleteBlog = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    // if (!blog_id) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Blog ID is required",
-    //   });
-    // }
-
-    // Check if the blog exists
-    // const [existing] = await mySqlDB.query(
-    //   "SELECT * FROM blogs WHERE id = ?",
-    //   [id]
-    // );
-
-    // if (existing.length === 0) {
-    //   return res.status(404).json({
-    //     success: false,
-    //     message: "Blog not found",
-    //   });
-    // }
-
-    // Delete the blog
     await mySqlDB.query("DELETE FROM blogs WHERE id = ?", [id]);
 
     res.status(200).json({
@@ -367,7 +358,10 @@ export const ShowAllBlogs = async (req, res, next) => {
   try {
     // Get pagination params from query, with defaults
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    // FIX: cap the limit so a client can't request an unbounded number
+    // of rows in one query (e.g. ?limit=1000000).
+    const requestedLimit = parseInt(req.query.limit) || 10;
+    const limit = Math.min(Math.max(requestedLimit, 1), 100);
     const offset = (page - 1) * limit;
 
     // Fetch blogs with author and category names
@@ -483,8 +477,7 @@ export const getBlogByCategory = async (req, res, next) => {
     const { slug } = req.params;
 
     const [blogs] = await mySqlDB.query(
-      `
-      SELECT 
+      `SELECT 
         b.*,
         c.name AS category_name,
         c.slug AS category_slug,
@@ -507,7 +500,7 @@ export const getBlogByCategory = async (req, res, next) => {
         name: blogs[0]?.category_name,
         slug: blogs[0]?.category_slug,
       },
-      data: blogs,
+      data: blogs[0]?.id ? blogs : [],
     });
   } catch (error) {
     next(handleError(res, 500, error.message));
@@ -515,10 +508,18 @@ export const getBlogByCategory = async (req, res, next) => {
 };
 
 // search result
-
 export const search = async (req, res, next) => {
   try {
     const { q } = req.query;
+
+    // FIX: without this check, a request with no ?q= searched for the
+    // literal string "undefined" instead of returning a clear error.
+    if (!q || !q.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Search query 'q' is required",
+      });
+    }
 
     const [blogs] = await mySqlDB.query(
       `
@@ -537,6 +538,7 @@ export const search = async (req, res, next) => {
         OR b.content LIKE ?
         OR c.name LIKE ?
       ORDER BY b.created_at DESC
+      LIMIT 50
       `,
       [`%${q}%`, `%${q}%`, `%${q}%`],
     );

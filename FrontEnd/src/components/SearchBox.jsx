@@ -26,7 +26,7 @@ const SearchBox = () => {
         value={query}
         onChange={getInput}
         placeholder="Search here..."
-        className="h-8 w-full rounded border p-2"
+        className="h-8 w-full rounded border-[#9DADC3]/50 p-2"
         type="text"
       />
     </form>

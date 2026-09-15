@@ -3,6 +3,12 @@ import { handleError } from "../helpers/handleError.js";
 import { mySqlDB } from "../config/db.js";
 import { v4 as uuidv4 } from "uuid";
 
+// NOTE (flagged, not changed): user_id is taken from req.body rather
+// than the authenticated user (req.user.id). If comments require login,
+// switch to req.user.id so a client can't post as someone else.
+// NOTE (flagged, not changed): comment content is stored as-is with no
+// sanitization — a stored-XSS risk if rendered as HTML on the frontend.
+
 // Create a new comment
 export const createComment = async (req, res, next) => {
   try {
@@ -100,6 +106,7 @@ export const getCommentCount = async (req, res, next) => {
     next(handleError(res, 500, error.message));
   }
 };
+
 // Delete comment
 export const deleteComment = async (req, res, next) => {
   try {
@@ -127,7 +134,8 @@ export const deleteComment = async (req, res, next) => {
     next(handleError(res, 500, error.message));
   }
 };
-// // Get all comments
+
+// Get all comments
 export const getAllComment = async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -137,6 +145,14 @@ export const getAllComment = async (req, res, next) => {
       "SELECT role FROM users WHERE id = ?",
       [userId],
     );
+
+    // FIX: guard against the token's user having been deleted from the
+    // DB — previously userRows[0].role would crash with a TypeError.
+    if (userRows.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
 
     const userRole = userRows[0].role;
 

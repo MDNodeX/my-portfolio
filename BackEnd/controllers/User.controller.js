@@ -2,6 +2,7 @@ import cloudinary from "../config/cloudinary.js";
 import { mySqlDB } from "../config/db.js";
 import bcryptjs from "bcryptjs";
 import { handleError } from "../helpers/handleError.js";
+import fs from "fs";
 
 export const getUserProfile = async (req, res, next) => {
   try {
@@ -23,11 +24,26 @@ export const getUserProfile = async (req, res, next) => {
   }
 };
 
-// // updateUser
+// updateUser
 export const updateUser = async (req, res, next) => {
   try {
-    const data = JSON.parse(req.body.data);
     const { userId } = req.params;
+
+    // FIX (security): previously ANY request could update ANY user's
+    // profile by passing a different userId in the URL — no check that
+    // the caller was updating their own account. This assumes an auth
+    // middleware sets req.user on this route; if it doesn't yet, add it,
+    // otherwise this will always fail closed (safe) rather than silently
+    // being insecure.
+    if (req.user.id !== userId && req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "You are not allowed to update this profile",
+      });
+    }
+
+    const data = JSON.parse(req.body.data);
+
     // Fetch user first
     const [rows] = await mySqlDB.query(
       "SELECT id, name, email, bio, avatar FROM users WHERE id = ?",
@@ -50,21 +66,25 @@ export const updateUser = async (req, res, next) => {
     }
 
     if (req.file) {
-      // Upload an image
-      const uploadResult = await cloudinary.uploader
-        .upload(req.file.path, {
-          folder: "swiftweb",
-          resource_type: "auto",
-        })
-        .catch((error) => {
-          return next(handleError(500));
-        });
+      // FIX: previously this had a .catch() on the upload promise that
+      // called next() once, but execution then fell through to the
+      // safety-check below which could throw and call next() a SECOND
+      // time — causing "Cannot set headers after they are sent". Now
+      // any upload failure propagates once to the outer catch below.
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "swiftweb",
+        resource_type: "auto",
+      });
 
-      // Safety check
       if (!uploadResult || !uploadResult.secure_url) {
         throw new Error("Cloudinary upload failed, no secure_url returned");
       }
       updatedFields.avatar = uploadResult.secure_url;
+
+      // FIX: clean up the local temp file after a successful upload —
+      // previously this was never deleted, so the uploads/ folder would
+      // grow unbounded over time.
+      fs.unlinkSync(req.file.path);
     }
 
     // Build dynamic SET query
@@ -92,7 +112,7 @@ export const updateUser = async (req, res, next) => {
       user: updatedRows[0],
     });
   } catch (error) {
-    return next(error);
+    return next(handleError(res, 500, error.message));
   }
 };
 
@@ -123,6 +143,15 @@ export const getAllUser = async (req, res, next) => {
 export const deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
+
+    // FIX (security): same missing ownership check as updateUser — any
+    // request could previously delete any account by ID.
+    if (req.user.id !== id && req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "You are not allowed to delete this account",
+      });
+    }
 
     const [user] = await mySqlDB.query("SELECT id FROM users WHERE id = ?", [
       id,

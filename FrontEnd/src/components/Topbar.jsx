@@ -1,72 +1,168 @@
-import React, { useState, useEffect, useRef } from "react";
-import logo from "@/assets/images/logo-2.png";
-import { PiSignInDuotone } from "react-icons/pi";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 import SearchBox from "./SearchBox";
-import { IoMdSearch } from "react-icons/io";
-import { TiThMenu } from "react-icons/ti";
-// icons
-import { FaHome } from "react-icons/fa";
+
+import {
+  Mail,
+  MapPin,
+  Clock,
+  ExternalLink,
+  Sparkles,
+  Menu,
+  X,
+  User,
+  LogOut,
+} from "lucide-react";
+
+import { FaBloggerB, FaHome } from "react-icons/fa";
 import { ImBlogger } from "react-icons/im";
-import { BiSolidCategory } from "react-icons/bi";
-import { FaCommentAlt } from "react-icons/fa";
-import { FaUserGroup } from "react-icons/fa6";
-import { MdCategory } from "react-icons/md";
-import { TbCategory2 } from "react-icons/tb";
+import { MdCategory, MdOutlineRoundaboutRight } from "react-icons/md";
 import { RiCustomerService2Fill } from "react-icons/ri";
-import { MdOutlineRoundaboutRight } from "react-icons/md";
+import { FaUser } from "react-icons/fa6";
 
 import {
   RouteBlogByCategory,
-  RouteBlogAdd,
   RouteIndex,
   RouteProfile,
   RouteSignIn,
-  RouteBlog,
-  RouteBlogSection,
   RouteAbout,
   RouteService,
+  RouteProject,
+  RouteBlogAdd,
+  RouteBlog,
+  RouteCommentsDetails,
+  RouteUsers,
+  RouteCategoryDetails,
+  RouteBlogDetails,
+  RouteBlogPage,
 } from "@/helpers/RouteName";
 
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { useDispatch, useSelector } from "react-redux";
-import usericon from "@/assets/images/user.png";
-import { FaUser } from "react-icons/fa6";
-import { FaBloggerB } from "react-icons/fa";
-import { RiLogoutBoxRLine } from "react-icons/ri";
+
 import { removeUser } from "@/redux/user/user.slice";
 import { showToast } from "@/helpers/showToast";
 import { getEnv } from "@/helpers/getEnv";
-// import { useSidebar } from "./ui/sidebar";
 import { useFetch } from "@/hooks/useFetch";
 
-const Topbar = () => {
+/* NAVIGATION */
+const navItems = [
+  {
+    label: "Home",
+    icon: FaHome,
+    to: RouteIndex,
+  },
+  {
+    label: "About",
+    icon: MdOutlineRoundaboutRight,
+    to: RouteAbout,
+  },
+  {
+    label: "Project",
+    icon: MdOutlineRoundaboutRight,
+    to: RouteProject,
+  },
+  {
+    label: "Services",
+    icon: RiCustomerService2Fill,
+    to: RouteService,
+  },
+
+  {
+    label: "Blog",
+    icon: ImBlogger,
+    to: RouteBlogPage,
+  },
+];
+
+export default function Topbar({ onOpenAIConsultant }) {
   const { data: categoryData } = useFetch(
     `${getEnv("VITE_API_BASE_URL")}/backend/category/getall`,
     {
       method: "GET",
-      credentials: "include",
     },
   );
-  // const { toggleSidebar } = useSidebar();
-  const [showSearch, setShowSearch] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const menuRef = useRef(null);
+
   const user = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [showSearch, setShowSearch] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [time, setTime] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const menuRef = useRef(null);
+
+  /* CLOCK */
+  useEffect(() => {
+    const updateClock = () => {
+      setTime(
+        new Date().toLocaleTimeString("en-US", {
+          timeZone: "America/New_York",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        }),
+      );
+    };
+
+    updateClock();
+
+    const interval = setInterval(updateClock, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  /* SCROLL EFFECT */
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  /* OUTSIDE CLICK */
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      // ignore clicks inside Radix portaled content (dropdowns, popovers, etc.)
+      if (event.target.closest("[data-radix-popper-content-wrapper]")) {
+        return;
+      }
+
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
+  /* LOGOUT */
   const handleLogout = async () => {
-    // Implement logout logic here
     try {
       const response = await fetch(
         `${getEnv("VITE_API_BASE_URL")}/backend/auth/logout`,
@@ -77,248 +173,381 @@ const Topbar = () => {
       );
 
       const data = await response.json();
+
       if (!response.ok || !data.success) {
-        return showToast(data.message || "Logout failed!", "error");
+        showToast(data.message || "Logout failed", "error");
+        return;
       }
-      showToast(data.message || "Logout successful!", "success");
+
       dispatch(removeUser());
+
+      showToast("Logged out successfully", "success");
+
       navigate(RouteIndex);
     } catch (error) {
-      showToast(error.message || "Something went wrong.", "error");
+      showToast("Something went wrong", "error");
     }
   };
-  const toggleSearch = () => {
-    setShowSearch(!showSearch);
-  };
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setShowMenu(false);
-      }
-    };
 
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
   return (
-    <div className="flex justify-between items-center h-16 fixed top-0 left-0 w-full z-50 md:px-10 gap-3 px-5 bg-[#f8f9fa] border-b">
-      <div className="flex justify-center items-center md:w-[150px] w-900">
-        <img src={logo} width="100%" height="auto" />
-      </div>
-      <div className="w-[500px] px-10">
-        <div
-          className={`md:relative absolute md:block bg-white left-0 w-full md:top-0 top-16 md:p-0 p-5 ${showSearch ? "block" : "hidden"}`}
-        >
-          <SearchBox />
+    <>
+      {/* TOP INFO BAR */}
+      <div className="flex h-10 w-full items-center border-b border-white/[0.06] bg-transparent text-xs text-white">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-4 text-slate-400">
+            <span className="flex items-center gap-1">
+              <span className="flex items-center justify-center rounded bg-emerald-400/15 p-1">
+                <Mail className="h-3 w-3 text-emerald-400" />
+              </span>
+              developeranarul@gmail.com
+            </span>
+
+            <span className="hidden items-center gap-1 sm:flex">
+              <span className="flex items-center justify-center rounded bg-emerald-400/15 p-1">
+                <MapPin className="h-3 w-3 text-emerald-400" />
+              </span>
+              Dhaka
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="hidden items-center gap-1 font-mono lg:flex">
+              <span className="flex items-center justify-center rounded bg-emerald-400/15 p-1">
+                <Clock className="h-3 w-3 text-emerald-400" />
+              </span>
+
+              {time}
+            </span>
+
+            <button
+              onClick={onOpenAIConsultant}
+              className="flex items-center gap-1 rounded border border-white/15 px-3 py-1 text-slate-300 transition hover:border-emerald-400/50 hover:text-emerald-400"
+            >
+              AI Advisor
+              <ExternalLink className="h-3 w-3" />
+            </button>
+          </div>
         </div>
       </div>
-      <div>
-        <nav className="lg:block hidden">
-          <ul className="flex space-x-4">
-            <li className="flex items-center gap-1 text-md font-semibold text-[#003057] hover:text-[#c8102e]">
-              <FaHome />
-              <Link to={RouteIndex}>Home</Link>
-            </li>
-            <li className="flex items-center gap-1 text-md font-semibold text-[#003057] hover:text-[#c8102e]">
-              <RiCustomerService2Fill />
-              <Link to={RouteService}>Services</Link>
-            </li>
-            <li className="flex items-center gap-1 text-md font-semibold text-[#003057] hover:text-[#c8102e]">
-              <MdOutlineRoundaboutRight />
-              <Link to={RouteAbout}>About</Link>
-            </li>
-            <li className="flex items-center gap-1 text-md font-semibold text-[#003057] hover:text-[#c8102e]">
-              <ImBlogger />
-              <Link to={RouteBlogSection}>Blog</Link>
-            </li>
 
-            <li className="flex items-center gap-1 text-md font-semibold text-[#003057] hover:text-[#c8102e]">
-              <DropdownMenu modal={false}>
-                {/* Trigger */}
-                <DropdownMenuTrigger asChild>
-                  <span className="flex items-center gap-1 cursor-pointer">
-                    <MdCategory />
-                    Category
-                  </span>
+      {/* HEADER */}
+      <header
+        className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+          isScrolled
+            ? // ? "border-white/[0.06] bg-[#07111E]/95 py-1 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] backdrop-blur-md"
+              // : "border-white/[0.00] bg-[#091628]/96 py-2 backdrop-blur-sm"
+              "border-white/[0.06] bg-[#07111E]/40 py-1 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] backdrop-blur-md"
+            : "border-white/[0.00] bg-transparent py-2"
+        }`}
+      >
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* LOGO */}
+          <Link to={RouteIndex} className="group flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded bg-gradient-to-br from-emerald-400 to-teal-500 transition-transform duration-300 group-hover:rotate-6">
+              <span className="font-display text-lg font-semibold text-[#04342C]">
+                Æ
+              </span>
+            </div>
+
+            <div className="flex flex-col">
+              <span className="font-display text-lg font-bold tracking-tight text-white transition-colors group-hover:text-emerald-400">
+                AEGIS
+                <span className="font-light text-emerald-400">.ST</span>
+              </span>
+
+              <span className="font-mono text-[9px] uppercase tracking-widest text-slate-500">
+                Web Strategy Studio
+              </span>
+            </div>
+          </Link>
+
+          {/* SEARCH */}
+          <div className="hidden w-[400px] md:block">
+            <SearchBox />
+          </div>
+
+          {/* RIGHT ACTIONS */}
+          <div className="flex items-center gap-3">
+            {/* DESKTOP NAV */}
+            <nav className="hidden items-center gap-6 md:flex lg:gap-8">
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.to;
+
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.to}
+                    className={`group relative py-1.5 text-xs font-bold uppercase tracking-wider transition-colors duration-300 ease-in-out hover:text-emerald-400 ${
+                      isActive ? "text-emerald-400" : "text-slate-400"
+                    }`}
+                  >
+                    {item.label}
+
+                    {/* ANIMATED UNDERLINE — grows from center */}
+                    <span
+                      className={`absolute bottom-0 left-0 h-0.5 w-full origin-center rounded-full bg-emerald-400 transition-transform duration-300 ease-in-out ${
+                        isActive
+                          ? "scale-x-100"
+                          : "scale-x-0 group-hover:scale-x-100"
+                      }`}
+                    />
+                  </Link>
+                );
+              })}
+
+              {/* CATEGORY */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-400 transition-colors duration-300 ease-in-out hover:text-emerald-400">
+                  <MdCategory className="h-4 w-4" />
+                  Categories
                 </DropdownMenuTrigger>
 
-                {/* Content */}
                 <DropdownMenuContent
-                  align="start"
-                  sideOffset={5}
-                  className="w-56"
+                  align="end"
+                  className="w-60 rounded-xl border border-white/[0.06] bg-[#091424] p-2 shadow-xl"
                 >
-                  {categoryData?.categories?.map((category) => (
-                    <DropdownMenuItem key={category.category_id} asChild>
-                      <Link to={RouteBlogByCategory(category.slug)}>
-                        {category.name}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
+                  <div className="mb-2 rounded-lg bg-white/[0.04] px-3 py-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      Browse Categories
+                    </p>
+                  </div>
+
+                  <div className="max-h-64 overflow-y-auto">
+                    {categoryData?.categories?.map((category) => (
+                      <DropdownMenuItem
+                        key={category.id}
+                        onSelect={() =>
+                          navigate(RouteBlogByCategory(category.slug))
+                        }
+                        className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-emerald-400/10 hover:text-emerald-400"
+                      >
+                        <span className="truncate">{category.name}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </li>
-          </ul>
-        </nav>
-      </div>
-      <div className="flex items-center gap-5">
-        <button
-          onClick={toggleSearch}
-          type="button"
-          className="md:hidden block "
-        >
-          <IoMdSearch size={25} />
-        </button>
-        {!user.isLoggedIn ? (
-          <Button
-            type="submit"
-            size="sm"
-            className=" hover:-translate-y-0.1 active:scale-[0.00] bg-[#003057] text-white hover:bg-[#050A30]"
-          >
-            <Link
-              to={RouteSignIn}
-              className="flex items-center gap-1 text-md font-semibold"
-            >
-              <PiSignInDuotone />
-              Sign In
-            </Link>
-          </Button>
-        ) : (
-          <>
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="rounded-full p-0">
-                  <Avatar className="w-10 h-10 border-2 border-white">
-                    <AvatarImage src={user.user.avatar} />
-                    <AvatarFallback>
-                      text
-                      <img src={usericon} width={40} />
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
+            </nav>
+            {/* MOBILE SEARCH BUTTON */}
+            <div className="relative md:hidden">
+              <button
+                onClick={() => setShowSearch((prev) => !prev)}
+                className="inline-flex items-center gap-1.5 rounded border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase text-emerald-400"
+              >
+                <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
+                Search
+              </button>
+            </div>
+            {showSearch && (
+              <div className="absolute right-0 top-full z-50 w-full border border-white/[0.06] bg-[#091424] p-3 shadow-xl">
+                <SearchBox />
+              </div>
+            )}
+            {/* AUTH */}
+            {!user?.isLoggedIn ? (
+              <Link
+                to={RouteSignIn}
+                className="inline-flex items-center gap-1 rounded bg-gradient-to-r from-emerald-400 to-teal-500 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-[#04342C] shadow-sm transition-colors hover:from-emerald-300 hover:to-teal-400"
+              >
+                <User className="h-3.5 w-3.5" />
+                Sign In
+              </Link>
+            ) : (
+              <DropdownMenu>
+                {/* TRIGGER */}
+                <DropdownMenuTrigger className="outline-none">
+                  <div className="flex items-center gap-2 rounded-full border border-white/10 bg-[#091424] shadow-sm transition">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user?.user?.avatar} />
+                      <AvatarFallback className="bg-emerald-400/20 text-xs text-emerald-400">
+                        {user?.user?.name?.[0] || "U"}
+                      </AvatarFallback>
+                    </Avatar>
 
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel>
-                    <p>{user.user.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {user.user.email}
+                    {/* <span className="hidden text-xs font-semibold text-slate-300 sm:block">
+                      {user?.user?.name || "User"}
+                    </span> */}
+                  </div>
+                </DropdownMenuTrigger>
+
+                {/* CONTENT */}
+                <DropdownMenuContent
+                  align="end"
+                  className="w-64 rounded-xl border border-white/[0.06] bg-[#091424] p-2 shadow-xl"
+                >
+                  {/* USER HEADER */}
+                  <div className="mb-2 rounded-lg bg-white/[0.04] p-3">
+                    <p className="text-sm font-semibold text-white">
+                      {user?.user?.name}
                     </p>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {/* Common menu */}
+                    <p className="text-[11px] text-slate-500">
+                      {user?.user?.role || "Member"}
+                    </p>
+                  </div>
+
+                  {/* PROFILE */}
                   <DropdownMenuItem asChild>
-                    <Link to={RouteProfile}>
-                      <FaUser />
+                    <Link
+                      to={RouteProfile}
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-emerald-400/10 hover:text-emerald-400"
+                    >
+                      <FaUser className="h-4 w-4" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
+
+                  {/* CREATE BLOG */}
                   <DropdownMenuItem asChild>
-                    <Link to={RouteBlogAdd}>
-                      <FaBloggerB />
+                    <Link
+                      to={RouteBlogAdd}
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-emerald-400/10 hover:text-emerald-400"
+                    >
+                      <FaBloggerB className="h-4 w-4" />
                       Create Blog
                     </Link>
                   </DropdownMenuItem>
-                  {/* 🔥 ADMIN MENU */}
-                  {/* user && user.isLoggedIn && user?.user?.role === "admin" */}
+
+                  {/* ADMIN SECTION */}
                   {user?.user?.role === "admin" && (
                     <>
-                      <DropdownMenuSeparator />
+                      <div className="my-2 border-t border-white/[0.06]" />
+
+                      <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                        Admin Panel
+                      </p>
 
                       <DropdownMenuItem asChild>
-                        <Link to={RouteBlog}>Blog</Link>
+                        <Link
+                          to={RouteBlog}
+                          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-emerald-400/10 hover:text-emerald-400"
+                        >
+                          Blogs
+                        </Link>
                       </DropdownMenuItem>
 
                       <DropdownMenuItem asChild>
-                        <Link to="/comments">Comments</Link>
+                        <Link
+                          to={RouteCommentsDetails}
+                          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-emerald-400/10 hover:text-emerald-400"
+                        >
+                          Comments
+                        </Link>
                       </DropdownMenuItem>
 
                       <DropdownMenuItem asChild>
-                        <Link to="/categories">Categories</Link>
+                        <Link
+                          to={RouteCategoryDetails}
+                          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-emerald-400/10 hover:text-emerald-400"
+                        >
+                          Categories
+                        </Link>
                       </DropdownMenuItem>
 
                       <DropdownMenuItem asChild>
-                        <Link to="/users">Users</Link>
+                        <Link
+                          to={RouteUsers}
+                          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-emerald-400/10 hover:text-emerald-400"
+                        >
+                          Users
+                        </Link>
                       </DropdownMenuItem>
                     </>
                   )}
-                  <DropdownMenuSeparator />
+
+                  {/* DIVIDER */}
+                  <div className="my-2 border-t border-white/[0.06]" />
+
+                  {/* LOGOUT */}
                   <DropdownMenuItem
-                    className="cursor-pointer"
                     onClick={handleLogout}
+                    className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-400 transition hover:bg-red-500/10"
                   >
-                    <RiLogoutBoxRLine color="red" />
-                    Log Out
+                    <LogOut className="h-4 w-4" />
+                    Logout
                   </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
-        )}
-      </div>
-      {/* Mobile / Tablet Menu icon */}
-      <button
-        onClick={() => setShowMenu(!showMenu)}
-        type="button"
-        className="lg:hidden block"
-      >
-        <TiThMenu size={28} />
-      </button>
-      {/* Mobile / Tablet Menu */}
-      {showMenu && (
-        <div
-          ref={menuRef}
-          className="absolute top-16 right-5 w-64 bg-white shadow-lg rounded-lg border p-4 lg:hidden z-50"
-        >
-          <ul className="flex flex-col gap-4">
-            <li className="flex items-center gap-2 text-md font-semibold text-[#003057] hover:text-[#c8102e]">
-              <FaHome />
-              <Link to={RouteIndex}>Home</Link>
-            </li>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
-            <li className="flex items-center gap-2 text-md font-semibold text-[#003057] hover:text-[#c8102e]">
-              <RiCustomerService2Fill />
-              <Link to={RouteService}>Services</Link>
-            </li>
-
-            <li className="flex items-center gap-2 text-md font-semibold text-[#003057] hover:text-[#c8102e]">
-              <MdOutlineRoundaboutRight />
-              <Link to={RouteAbout}>About</Link>
-            </li>
-
-            <li className="flex items-center gap-2 text-md font-semibold text-[#003057] hover:text-[#c8102e]">
-              <ImBlogger />
-              <Link to={RouteBlogSection}>Blog</Link>
-            </li>
-
-            {/* Categories */}
-            <div className="border-t pt-3">
-              <p className="flex items-center gap-2 font-semibold text-[#003057] mb-2">
-                <MdCategory />
-                Categories
-              </p>
-
-              <div className="flex flex-col gap-2 ml-2">
-                {categoryData?.categories?.map((category) => (
-                  <Link
-                    key={category.category_id || category.id}
-                    to={RouteBlogByCategory(category.slug)}
-                    className="text-sm hover:text-[#c8102e]"
-                  >
-                    {category.name}
-                  </Link>
-                ))}
-              </div>
+            {/* MOBILE MENU */}
+            <div className="flex items-center gap-2 md:hidden">
+              <button
+                onClick={() => setShowMenu((prev) => !prev)}
+                className="rounded-md text-slate-300 transition-all hover:bg-white/5 hover:text-emerald-400"
+                aria-label="Toggle Menu"
+              >
+                {showMenu ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
             </div>
-          </ul>
+          </div>
         </div>
-      )}
-    </div>
-  );
-};
 
-export default Topbar;
+        {/* MOBILE MENU */}
+        {showMenu && (
+          <div
+            ref={menuRef}
+            className="absolute right-4 top-full w-64 rounded-lg border border-white/[0.06] bg-[#091424] p-4 shadow-xl md:hidden"
+          >
+            <div className="flex flex-col gap-1">
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.to;
+
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.to}
+                    onClick={() => setShowMenu(false)}
+                    className={`group relative flex items-center gap-2 rounded-md px-3 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors duration-300 ease-in-out hover:bg-emerald-400/10 hover:text-emerald-400 ${
+                      isActive
+                        ? "bg-emerald-400/10 text-emerald-400"
+                        : "text-slate-400"
+                    }`}
+                  >
+                    {item.icon && <item.icon className="h-4 w-4" />}
+                    {item.label}
+                  </Link>
+                );
+              })}
+              {/* CATEGORY */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 rounded-md px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-400 transition-colors duration-300 ease-in-out hover:bg-emerald-400/10 hover:text-emerald-400">
+                  <MdCategory className="h-4 w-4" />
+                  Categories
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  align="end"
+                  className="w-60 rounded-xl border border-white/[0.06] bg-[#091424] p-2 shadow-xl"
+                >
+                  <div className="mb-2 rounded-lg bg-white/[0.04] px-3 py-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      Browse Categories
+                    </p>
+                  </div>
+
+                  <div className="max-h-64 overflow-y-auto">
+                    {categoryData?.categories?.map((category) => (
+                      <DropdownMenuItem
+                        key={category.id}
+                        onSelect={() =>
+                          navigate(RouteBlogByCategory(category.slug))
+                        }
+                        className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-emerald-400/10 hover:text-emerald-400"
+                      >
+                        <span className="truncate">{category.name}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        )}
+      </header>
+    </>
+  );
+}

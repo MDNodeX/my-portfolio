@@ -10,7 +10,6 @@ import {
   Instagram,
 } from "lucide-react";
 import ContactForm from "@/components/contact-form";
-import bgContact from "@/assets/images/bg-contact.png";
 
 const contactItems = [
   {
@@ -26,15 +25,9 @@ const contactItems = [
     color: "bg-white/10 text-white",
   },
   {
-    icon: Clock,
-    title: "Operating Hours",
-    details: "Mon-Fri: 09:00 - 20:00\nSat-Sun: 10:30 - 22:00",
-    color: "bg-white/10 text-white",
-  },
-  {
-    icon: Clock,
-    title: "Operating Hours",
-    details: "Mon-Fri: 09:00 - 20:00\nSat-Sun: 10:30 - 22:00",
+    icon: Mail,
+    title: "Send us an Email",
+    details: "info@example.com",
     color: "bg-white/10 text-white",
   },
 ];

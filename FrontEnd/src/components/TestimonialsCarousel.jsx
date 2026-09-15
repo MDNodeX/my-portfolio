@@ -7,6 +7,7 @@ import {
   Quote,
   CheckCircle2,
 } from "lucide-react";
+import LineAnimation from "@/components/ui/lineanimation";
 
 const testimonials = [
   {
@@ -61,38 +62,48 @@ export default function TestimonialsCarousel() {
   return (
     <section
       id="testimonials"
-      className="relative py-24 overflow-hidden bg-white"
+      className="relative overflow-hidden bg-[#07111E] py-24"
     >
-      {/* Background Polish Elements - Subtler for white background */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] pointer-events-none opacity-10">
-        <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-blue-600 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[250px] h-[250px] bg-purple-600 rounded-full blur-[100px]" />
-      </div>
+      {/* Ambient background glow — matches your other sections */}
+      <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-3xl mx-auto text-center mb-16">
+      {/* Faint grid texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
+
+      <div className="container relative z-10 mx-auto px-6">
+        <div className="mx-auto mb-16 max-w-3xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-display font-bold tracking-tight mb-6 text-zinc-900">
+            <h2 className="mb-4 font-display text-4xl font-bold tracking-tight text-white md:text-5xl">
               Trusted by Clients Worldwide
             </h2>
-            <p className="text-lg text-zinc-500 font-sans max-w-2xl mx-auto">
-              See what our clients say about working with our agency. We pride
-              ourselves on delivering exceptional results that drive growth and
-              innovation.
+            <div className="flex w-full justify-center">
+              <LineAnimation />
+            </div>
+
+            <p className="mx-auto mt-3 max-w-2xl font-sans text-lg text-slate-400">
+              See what our clients say about working with our agency.
             </p>
           </motion.div>
         </div>
 
         {/* Infinite Scroller */}
-        <div className="relative group">
+        <div className="group relative">
           {/* Gradient Masks */}
-          <div className="absolute left-0 top-0 w-32 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 w-32 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-32 bg-gradient-to-r from-[#07111E] to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-32 bg-gradient-to-l from-[#07111E] to-transparent" />
 
           <div className="flex overflow-hidden">
             <motion.div
@@ -111,45 +122,45 @@ export default function TestimonialsCarousel() {
               {scrollItems.map((testimonial, index) => (
                 <div
                   key={`${testimonial.id}-${index}`}
-                  className="glass-card w-[350px] md:w-[450px] shrink-0 rounded-[10px] p-5 flex flex-col h-full relative"
+                  className="relative flex h-full w-[350px] shrink-0 flex-col rounded-2xl border border-white/[0.06] bg-[#091424] p-5 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)] md:w-[450px]"
                 >
                   {/* Star Rating */}
-                  <div className="flex items-center gap-1 mb-6 text-amber-400">
+                  <div className="mb-6 flex items-center gap-1 text-emerald-400">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} size={14} fill="#c8102e" />
+                      <Star key={i} size={14} fill="#34d399" stroke="none" />
                     ))}
                   </div>
 
                   {/* Testimonial Text */}
                   <div className="flex-1">
-                    <p className="text-lg text-zinc-700 font-sans leading-relaxed mb-8">
+                    <p className="mb-8 font-sans text-lg leading-relaxed text-slate-300">
                       "{testimonial.text}"
                     </p>
                   </div>
 
                   {/* Client Info */}
-                  <div className="flex items-center gap-4 mt-auto pt-6 border-t border-zinc-100">
-                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-zinc-200 relative shrink-0">
+                  <div className="mt-auto flex items-center gap-4 border-t border-white/[0.06] pt-6">
+                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-white/10">
                       <img
                         src={testimonial.image}
                         alt={testimonial.name}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                         referrerPolicy="no-referrer"
                       />
                     </div>
                     <div className="overflow-hidden">
                       <div className="flex items-center gap-1.5">
-                        <h4 className="text-sm font-display font-semibold text-zinc-900 truncate">
+                        <h4 className="truncate font-display text-sm font-semibold text-white">
                           {testimonial.name}
                         </h4>
                         {testimonial.verified && (
                           <CheckCircle2
                             size={12}
-                            className="text-blue-600 shrink-0"
+                            className="shrink-0 text-emerald-400"
                           />
                         )}
                       </div>
-                      <p className="text-xs text-zinc-500 font-sans truncate">
+                      <p className="truncate font-sans text-xs text-slate-500">
                         {testimonial.role} at {testimonial.company}
                       </p>
                     </div>

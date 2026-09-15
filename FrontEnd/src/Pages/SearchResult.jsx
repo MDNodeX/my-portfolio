@@ -16,24 +16,50 @@ const SearchResult = () => {
     },
   );
 
-  if (loading) return <div>Loading...</div>;
-
   return (
-    <>
-      <section className="px-10 py-10 max-w-7xl mx-auto">
-        <div className="flex items-center gap-3 text-2xl font-bold border-b text-violet-500 pb-3 mb-5">
-          <h2>Search Result For : {q}</h2>
+    <section className="relative min-h-screen overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+      {/* Ambient background glow — matches your other sections */}
+      <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
+
+      {/* Faint grid texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-7xl">
+        <div className="mb-10 flex items-center gap-3 border-b border-white/[0.06] pb-5">
+          <h2 className="text-2xl font-bold text-white">
+            Search Result For: <span className="text-emerald-400">{q}</span>
+          </h2>
         </div>
 
-        <div className="grid grid-cols-3 gap-10">
-          {blogData?.data?.length > 0 ? (
-            blogData.data.map((blog) => <BlogCard key={blog.id} props={blog} />)
-          ) : (
-            <div>No results found.</div>
-          )}
-        </div>
-      </section>
-    </>
+        {loading ? (
+          <div className="text-slate-400">Loading...</div>
+        ) : (
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {blogData?.data?.length > 0 ? (
+              blogData.data.map((blog) => (
+                <BlogCard
+                  key={blog.id}
+                  blog={blog}
+                  categoryName={blog.category_name}
+                />
+              ))
+            ) : (
+              <div className="col-span-full text-slate-400">
+                No results found.
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </section>
   );
 };
 
