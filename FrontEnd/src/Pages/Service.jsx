@@ -11,6 +11,7 @@ import React from "react";
 import { FaServicestack } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button";
+import FadeIn from "@/components/motion/FadeIn";
 import {
   Check,
   Rocket,
@@ -1133,7 +1134,7 @@ const Service = () => {
         />
 
         <div className="relative mx-auto max-w-6xl">
-          <div className="mb-12 text-center sm:mb-14">
+          <FadeIn className="mb-12 text-center sm:mb-14">
             <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
               Services I Provide
             </h2>
@@ -1141,12 +1142,12 @@ const Service = () => {
               Professional web solutions that help your business grow online
             </p>
             <div className="mx-auto mt-5 h-1 w-16 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500" />
-          </div>
+          </FadeIn>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {servicesbox.map(({ title, description, Scene }) => (
+            {servicesbox.map(({ title, description, Scene }, i) => (
+              <FadeIn key={title} delay={(i % 3) * 0.1}>
               <div
-                key={title}
                 className="group flex flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-[#091424] p-3 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)]"
               >
                 <div className="overflow-hidden rounded-2xl">
@@ -1169,6 +1170,7 @@ const Service = () => {
                   </button>
                 </div>
               </div>
+              </FadeIn>
             ))}
           </div>
         </div>
@@ -1191,14 +1193,11 @@ const Service = () => {
           //         linear-gradient(rgba(18, 63, 100, 0.7), rgba(0, 20, 73, 0.7)), url(${aboutpagehead})`,
           // }}
         >
-          <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
+          <FadeIn className="relative z-10 max-w-7xl mx-auto px-4 text-center">
             <h1 className="lg:text-7xl text-5xl font-black text-white flex items-center justify-center gap-2">
               Our <div className="text-[#c8102e]">Services</div>
             </h1>
-            {/* <p className="text-white/80 mt-4 text-lg">
-                  Build modern and scalable websites for your business.
-                </p> */}
-          </div>
+          </FadeIn>
         </section>
         {/* pricing section */}
         <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
@@ -1218,7 +1217,7 @@ const Service = () => {
 
           <div className="relative mx-auto max-w-6xl">
             {/* Heading */}
-            <div className="mb-10 text-center sm:mb-14">
+            <FadeIn className="mb-10 text-center sm:mb-14">
               <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium tracking-wide text-emerald-400">
                 <Sparkles className="h-3.5 w-3.5" />
                 Pricing
@@ -1230,15 +1229,15 @@ const Service = () => {
                 Simple, transparent pricing. Pick the plan that fits your
                 project — no hidden fees.
               </p>
-            </div>
+            </FadeIn>
 
             {/* Cards */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:items-center lg:gap-6">
-              {plans.map((plan) => {
+              {plans.map((plan, i) => {
                 const Icon = plan.icon;
                 return (
+                  <FadeIn key={plan.name} delay={(i % 3) * 0.1}>
                   <div
-                    key={plan.name}
                     className={`group relative flex flex-col overflow-hidden rounded-2xl border p-6 transition-all duration-300 sm:p-7 ${
                       plan.popular
                         ? "border-emerald-400/40 bg-[#091424] shadow-[0_0_0_1px_rgba(52,211,153,0.15),0_20px_60px_-15px_rgba(16,185,129,0.35)] lg:scale-[1.05] lg:py-10"
@@ -1327,6 +1326,7 @@ const Service = () => {
                       )}
                     </div>
                   </div>
+                  </FadeIn>
                 );
               })}
             </div>
@@ -1350,20 +1350,20 @@ const Service = () => {
 
           <div className="relative mx-auto max-w-6xl">
             {/* Heading */}
-            <div className="mb-10 text-center sm:mb-14">
+            <FadeIn className="mb-10 text-center sm:mb-14">
               <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Optional Add-ons
               </h2>
               <p className="mx-auto mt-3 max-w-md text-sm text-slate-400 sm:text-base">
                 Enhance your web development project with these powerful add-ons
               </p>
-            </div>
+            </FadeIn>
 
             {/* Cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {addons.map((addon) => (
+              {addons.map((addon, i) => (
+                <FadeIn key={addon.name} delay={(i % 3) * 0.08}>
                 <div
-                  key={addon.name}
                   className="group flex flex-col items-start justify-between gap-4 rounded-2xl border border-white/[0.06] bg-[#091424] p-5 transition-all duration-300 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)] sm:flex-row sm:items-center sm:gap-3"
                 >
                   <h3 className="text-base font-semibold leading-snug text-white sm:text-[15px]">
@@ -1373,6 +1373,7 @@ const Service = () => {
                     {addon.price}
                   </span>
                 </div>
+                </FadeIn>
               ))}
             </div>
           </div>
@@ -1395,7 +1396,7 @@ const Service = () => {
 
           <div className="relative mx-auto max-w-6xl">
             {/* Heading */}
-            <div className="mb-10 text-center sm:mb-14">
+            <FadeIn className="mb-10 text-center sm:mb-14">
               <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
                 What I will do?
               </h2>
@@ -1403,15 +1404,15 @@ const Service = () => {
                 You don't have to struggle alone, you've got our assistance and
                 help. It's just not a service, it's a relationship...
               </p>
-            </div>
+            </FadeIn>
 
             {/* Cards */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {steps.map((step) => {
+              {steps.map((step, i) => {
                 const Icon = step.icon;
                 return (
+                  <FadeIn key={step.number} delay={(i % 3) * 0.1}>
                   <div
-                    key={step.number}
                     className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-[#091424] p-6 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)] sm:p-7"
                   >
                     {/* Large faded step number */}
@@ -1431,6 +1432,7 @@ const Service = () => {
                       {step.description}
                     </p>
                   </div>
+                  </FadeIn>
                 );
               })}
             </div>

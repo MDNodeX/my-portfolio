@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { RouteContact } from "@/helpers/RouteName";
 import aboutImage from "@/assets/images/about.jpg";
 import { Button } from "@/components/ui/button";
+import FadeIn from "@/components/motion/FadeIn";
 
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -401,50 +402,12 @@ const About = () => {
             linear-gradient(rgba(18, 63, 100, 0.7), rgba(0, 20, 73, 0.7)), url(${aboutpagehead})`,
         }}
       >
-        <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
+        <FadeIn className="relative z-10 max-w-7xl mx-auto px-4 text-center">
           <h1 className="lg:text-7xl text-5xl font-black text-white flex items-center justify-center gap-2">
             About <div className="text-[#c8102e]">Us</div>
           </h1>
-          {/* <p className="text-white/80 mt-4 text-lg">
-            Build modern and scalable websites for your business.
-          </p> */}
-        </div>
+        </FadeIn>
       </section>
-
-      {/* about section
-      <section className="w-full">
-        <div className="grid lg:grid-cols-2 grid-cols-1 lg:gap-10 gap-5 items-center lg:px-10 px-5 my-10">
-          <div
-            className="flex flex-col justify-center items-center lg:py-50 py-25 w-full rounded-lg"
-            style={{
-              backgroundImage: `url(${aboutImage})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div>
-          <div className="flex flex-col justify-center lg:items-start items-center lg:text-left text-center gap-5 lg:py-20 pb-10">
-            <h1 className="lg:text-5xl text-3xl font-black text-[#003057] font-sans">
-              Full-Time Web & Application Developer
-            </h1>
-            <p className="text-lg md:text-1xl text-[#334d5a]">
-              Hi, I’m WP Hridoy — a professional Freelancer, Web Developer &
-              WordPress Expert from Bangladesh with 6+ years of experience. I
-              specialize in creating modern, responsive, and optimized websites
-              tailored to client needs. Passionate about learning and improving
-              every day, I aim to deliver top-quality results with lifetime
-              support you can rely on.
-            </p>
-            <Button
-              type="submit"
-              variant="primaryRed"
-              size="lg"
-              className="text-md font-semibold"
-            >
-              <Link to={RouteContact}>Get In Touch</Link>
-            </Button>
-          </div>
-        </div>
-      </section> */}
 
       {/* about section */}
       <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
@@ -462,7 +425,7 @@ const About = () => {
           }}
         />
 
-        <div className="relative mx-auto max-w-6xl">
+        <FadeIn className="relative mx-auto max-w-6xl">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
             {/* Image */}
             <div
@@ -522,7 +485,7 @@ const About = () => {
               </Button>
             </div>
           </div>
-        </div>
+        </FadeIn>
       </section>
 
       <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
@@ -542,8 +505,10 @@ const About = () => {
 
         <div className="relative mx-auto max-w-6xl">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat) => (
-              <StatCard key={stat.label} stat={stat} />
+            {stats.map((stat, i) => (
+              <FadeIn key={stat.label} delay={i * 0.08}>
+                <StatCard stat={stat} />
+              </FadeIn>
             ))}
           </div>
         </div>
@@ -569,11 +534,11 @@ const About = () => {
           <SectionEyebrow>Core Stack</SectionEyebrow>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {coreStack.map((tech) => {
+            {coreStack.map((tech, i) => {
               const Icon = tech.icon;
               return (
+                <FadeIn key={tech.name} delay={(i % 6) * 0.06}>
                 <div
-                  key={tech.name}
                   className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/[0.06] bg-[#091424] p-6 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)]"
                 >
                   <div
@@ -585,6 +550,7 @@ const About = () => {
                     {tech.name}
                   </span>
                 </div>
+                </FadeIn>
               );
             })}
           </div>
@@ -596,11 +562,11 @@ const About = () => {
             </SectionEyebrow>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {expertise.map((item) => {
+              {expertise.map((item, i) => {
                 const Icon = item.icon;
                 return (
+                  <FadeIn key={item.name} delay={(i % 4) * 0.08}>
                   <div
-                    key={item.name}
                     className="group flex items-center gap-3 rounded-2xl border border-white/[0.06] bg-[#091424] p-5 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)]"
                   >
                     <div
@@ -612,6 +578,7 @@ const About = () => {
                       {item.name}
                     </span>
                   </div>
+                  </FadeIn>
                 );
               })}
             </div>
@@ -637,6 +604,7 @@ const About = () => {
         <div className="relative mx-auto max-w-6xl">
           <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16">
             {/* Left column */}
+            <FadeIn direction="left">
             <div ref={leftColRef}>
               <div className="mb-5 flex items-center gap-3">
                 <span className="h-px w-8 bg-emerald-400" />
@@ -666,9 +634,10 @@ const About = () => {
                 ))}
               </div>
             </div>
+            </FadeIn>
 
             {/* Right column — accordion */}
-            <div className="flex flex-col gap-4">
+            <FadeIn direction="right" className="flex flex-col gap-4">
               {accordionItems.map((item, index) => (
                 <AccordionItem
                   key={item.title}
@@ -680,7 +649,7 @@ const About = () => {
                   }
                 />
               ))}
-            </div>
+            </FadeIn>
           </div>
         </div>
       </section>
@@ -701,7 +670,7 @@ const About = () => {
           }}
         />
 
-        <div className="relative mx-auto max-w-6xl text-center">
+        <FadeIn className="relative mx-auto max-w-6xl text-center">
           <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
             Where I Work
           </h2>
@@ -711,11 +680,11 @@ const About = () => {
           <div className="mx-auto mt-5 h-1 w-16 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500" />
 
           <div className="mt-12 flex flex-wrap items-center justify-center gap-5 sm:gap-6">
-            {platforms.map((platform) => {
+            {platforms.map((platform, i) => {
               const Icon = platform.icon;
               return (
+                <FadeIn key={platform.name} delay={(i % 5) * 0.06}>
                 <div
-                  key={platform.name}
                   className="group flex h-[90px] w-[190px] items-center justify-center gap-2.5 rounded-2xl border border-transparent bg-white px-6 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/50 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.4)]"
                 >
                   <Icon
@@ -726,10 +695,11 @@ const About = () => {
                     {platform.name}
                   </span>
                 </div>
+                </FadeIn>
               );
             })}
           </div>
-        </div>
+        </FadeIn>
       </section>
     </>
   );

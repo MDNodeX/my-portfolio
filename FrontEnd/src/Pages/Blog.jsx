@@ -1,108 +1,9 @@
-// import { Card, CardContent } from "@/components/ui/card";
-// import React, { useState, useMemo } from "react";
-// import Loading from "@/components/Loading";
-// import { getEnv } from "@/helpers/getEnv";
-// import BlogCard from "@/components/BlogCard";
-// import { useFetch } from "@/hooks/useFetch";
-// // import { useParams } from "react-router-dom";
-
-// export default function BlogPage() {
-//   // const { slug } = useParams();
-//   const [activeCategory, setActiveCategory] = useState("All");
-
-//   const {
-//     data: blogData,
-//     loading,
-//     error,
-//   } = useFetch(`${getEnv("VITE_API_BASE_URL")}/backend/blog/blogs`, {
-//     method: "GET",
-//     credentials: "include",
-//   });
-
-//   const { data: categoryData } = useFetch(
-//     `${getEnv("VITE_API_BASE_URL")}/backend/category/getall`,
-//     { method: "GET" },
-//   );
-
-//   // Map category_id -> category object, so we can resolve names for each blog
-//   const categoryMap = useMemo(() => {
-//     const map = {};
-//     categoryData?.categories?.forEach((cat) => {
-//       map[cat.category_id || cat.id] = cat;
-//     });
-//     return map;
-//   }, [categoryData]);
-
-//   // Helper: get a display-friendly category name for a blog,
-//   // whether the blog stores category_id, categoryId, or a nested category object
-//   const getCategoryName = (blog) => {
-//     if (blog.category?.name) return blog.category.name; // nested object case
-//     if (blog.category_name) return blog.category_name; // flat field case
-//     const id = blog.category_id || blog.categoryId;
-//     return categoryMap[id]?.name || "Uncategorized";
-//   };
-
-//   // Build filter list from actual categories endpoint (preferred, always accurate)
-//   const categories = useMemo(() => {
-//     const names = categoryData?.categories?.map((cat) => cat.name) || [];
-//     return ["All", ...names];
-//   }, [categoryData]);
-
-//   // Filter blogs by resolved category name
-//   const filteredBlogs = useMemo(() => {
-//     if (!blogData?.data?.length) return [];
-//     if (activeCategory === "All") return blogData.data;
-//     return blogData.data.filter(
-//       (blog) => getCategoryName(blog) === activeCategory,
-//     );
-//   }, [blogData, activeCategory, categoryMap]);
-
-//   if (loading) return <Loading />;
-
-//   return (
-//     <>
-//       <section className="w-full py-20">
-//         {/* Category filter menu */}
-//         <div className="flex flex-wrap justify-center gap-3 lg:px-20 px-5 mb-6">
-//           {categories.map((cat) => (
-//             <button
-//               key={cat}
-//               onClick={() => setActiveCategory(cat)}
-//               className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-//                 activeCategory === cat
-//                   ? "bg-black text-white border-black"
-//                   : "bg-white text-black border-gray-300 hover:bg-gray-100"
-//               }`}
-//             >
-//               {cat}
-//             </button>
-//           ))}
-//         </div>
-
-//         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-10 lg:px-20 px-5 lg:py-10 px-5 my-10">
-//           {filteredBlogs.length > 0 ? (
-//             filteredBlogs.map((blog) => (
-//               <BlogCard
-//                 key={blog.id}
-//                 blog={blog}
-//                 categoryName={getCategoryName(blog)}
-//               />
-//             ))
-//           ) : (
-//             <div>Data Not Found!</div>
-//           )}
-//         </div>
-//       </section>
-//     </>
-//   );
-// }
-
 import React, { useState, useMemo } from "react";
 import Loading from "@/components/Loading";
 import { getEnv } from "@/helpers/getEnv";
 import BlogCard from "@/components/BlogCard";
 import { useFetch } from "@/hooks/useFetch";
-// import { useParams } from "react-router-dom";
+import FadeIn from "@/components/motion/FadeIn";
 
 export default function BlogPage() {
   // const { slug } = useParams();
@@ -175,17 +76,20 @@ export default function BlogPage() {
 
       <div className="relative mx-auto max-w-7xl">
         {/* Heading */}
-        <div className="mb-10 text-center sm:mb-14">
+        <FadeIn className="mb-10 text-center sm:mb-14">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Our Blog
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-slate-400 sm:text-base">
             Insights, guides, and updates from our team.
           </p>
-        </div>
+        </FadeIn>
 
         {/* Category filter menu */}
-        <div className="mb-10 flex flex-wrap items-center justify-center gap-3 sm:mb-14">
+        <FadeIn
+          delay={0.1}
+          className="mb-10 flex flex-wrap items-center justify-center gap-3 sm:mb-14"
+        >
           {categories.map((cat) => (
             <button
               key={cat}
@@ -199,7 +103,7 @@ export default function BlogPage() {
               {cat}
             </button>
           ))}
-        </div>
+        </FadeIn>
 
         {/* Cards */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
