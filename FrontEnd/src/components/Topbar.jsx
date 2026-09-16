@@ -184,7 +184,7 @@ export default function Topbar({ onOpenAIConsultant }) {
       showToast("Logged out successfully", "success");
 
       navigate(RouteIndex);
-    } catch (error) {
+    } catch {
       showToast("Something went wrong", "error");
     }
   };

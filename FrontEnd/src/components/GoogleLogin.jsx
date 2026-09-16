@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React from "react";
 import { Button } from "./ui/Button";
 import { FcGoogle } from "react-icons/fc";
 import { signInWithPopup } from "firebase/auth";
