@@ -1,21 +1,25 @@
 
 # Dependencies
 node_modules/
-frontend/node_modules/
-backend/node_modules/
+FrontEnd/node_modules/
+BackEnd/node_modules/
 
 # Environment variables
 .env
 .env.*
 !.env.example
-frontend/.env
-backend/.env
+FrontEnd/.env
+BackEnd/.env
 
 # Build output
 dist/
 build/
-frontend/dist/
-backend/dist/
+FrontEnd/dist/
+BackEnd/dist/
+
+# Uploaded user content
+BackEnd/uploads/*
+!BackEnd/uploads/.gitkeep
 
 # Logs
 *.log

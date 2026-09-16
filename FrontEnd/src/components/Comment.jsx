@@ -18,7 +18,7 @@ import { RouteSignIn } from "@/helpers/RouteName";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-const Comment = ({ blogId, comments, setComments }) => {
+const Comment = ({ blogId, setComments }) => {
   const user = useSelector((state) => state.user);
 
   const formSchema = z.object({

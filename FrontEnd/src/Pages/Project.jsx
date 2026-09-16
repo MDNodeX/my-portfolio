@@ -1,112 +1,7 @@
-// import {
-//   CardHeader,
-//   CardTitle,
-//   Card,
-//   CardDescription,
-//   CardContent,
-// } from "@/components/ui/card";
-// import aboutpagehead from "@/assets/images/10002.svg";
-// import React from "react";
-// import { FaServicestack } from "react-icons/fa";
-
-// // Base URL with optimization params baked in
-// const CLOUD_BASE =
-//   "https://res.cloudinary.com/dl913bem7/image/upload/w_600,h_400,c_fill,q_auto,f_auto";
-
-// const portfolios = [
-//   {
-//     id: 1,
-//     title: "Business Website",
-//     image: `${CLOUD_BASE}/v1784725724/10004_ecntcn.jpg`,
-//   },
-//   {
-//     id: 2,
-//     title: "E-Commerce Store",
-//     image: `${CLOUD_BASE}/v1784725718/10003_l8trib.jpg`,
-//   },
-//   {
-//     id: 3,
-//     title: "E-Commerce Store",
-//     image: `${CLOUD_BASE}/v1784725709/10001_xzcmft.jpg`,
-//   },
-//   {
-//     id: 4,
-//     title: "E-Commerce Store",
-//     image: `${CLOUD_BASE}/v1784725708/10002_wkglzw.jpg`,
-//   },
-//   {
-//     id: 5,
-//     title: "E-Commerce Store",
-//     image: `${CLOUD_BASE}/v1784725707/10005_hjghnr.jpg`,
-//   },
-//   {
-//     id: 6,
-//     title: "E-Commerce Store",
-//     image: `${CLOUD_BASE}/v1784725707/10005_hjghnr.jpg`,
-//   },
-// ];
-
-// const Project = () => {
-//   return (
-//     <>
-//       <section
-//         className="relative w-full lg:py-15 py-10 overflow-hidden bg-cover bg-center"
-//         style={{
-//           backgroundImage: `linear-gradient(rgba(18, 63, 100, 0.7), rgba(0, 20, 73, 0.7)), url(${aboutpagehead})`,
-//         }}
-//       >
-//         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
-//           <h1 className="lg:text-7xl text-5xl font-black text-white flex items-center justify-center gap-2">
-//             Our <div className="text-[#c8102e]">Services</div>
-//           </h1>
-//         </div>
-//       </section>
-
-//       <section className="w-full lg:py-20 py-10 bg-[#F8FAFC]">
-//         <div className="max-w-7xl mx-auto px-4 px-6 lg:px-8">
-//           <div className="text-center">
-//             <h2 className="mb-10 text-3xl lg:text-4xl font-black text-[#0F172A]">
-//               Recent Projects
-//             </h2>
-//           </div>
-
-//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-//             {portfolios.map((portfolio) => (
-//               <Card
-//                 key={portfolio.id}
-//                 className="group overflow-hidden border-0 rounded-2xl shadow-md bg-white py-0"
-//               >
-//                 <CardContent className="p-0">
-//                   <div className="relative overflow-hidden">
-//                     <img
-//                       src={portfolio.image}
-//                       alt={portfolio.title}
-//                       loading="lazy"
-//                       decoding="async"
-//                       className="w-full h-[300px] object-cover transform transition-transform duration-200 ease-out group-hover:scale-110"
-//                     />
-//                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center"></div>
-//                   </div>
-//                   <div className="p-5">
-//                     <h3 className="text-2xl font-bold text-[#0F172A]">
-//                       {portfolio.title}
-//                     </h3>
-//                   </div>
-//                 </CardContent>
-//               </Card>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-//     </>
-//   );
-// };
-
-// export default Project;
-
 import React, { useState } from "react";
 import { Lock } from "lucide-react";
 import aboutpagehead from "@/assets/images/10002.svg";
+import FadeIn from "@/components/motion/FadeIn";
 
 // Base URL with optimization params baked in
 const CLOUD_BASE =
@@ -217,11 +112,11 @@ const Project = () => {
           backgroundImage: `linear-gradient(rgba(18, 63, 100, 0.7), rgba(0, 20, 73, 0.7)), url(${aboutpagehead})`,
         }}
       >
-        <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
+        <FadeIn className="relative z-10 max-w-7xl mx-auto px-4 text-center">
           <h1 className="lg:text-7xl text-5xl font-black text-white flex items-center justify-center gap-2">
             Our <div className="text-[#c8102e]">Services</div>
           </h1>
-        </div>
+        </FadeIn>
       </section>
 
       <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
@@ -240,17 +135,20 @@ const Project = () => {
         />
 
         <div className="relative mx-auto max-w-7xl">
-          <div className="mb-10 text-center sm:mb-12">
+          <FadeIn className="mb-10 text-center sm:mb-12">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Recent Projects
             </h2>
             <p className="mx-auto mt-3 max-w-md text-sm text-slate-400 sm:text-base">
               A few of the products and websites we've shipped recently.
             </p>
-          </div>
+          </FadeIn>
 
           {/* Category filter pills */}
-          <div className="mb-10 flex flex-wrap items-center justify-center gap-3 sm:mb-14">
+          <FadeIn
+            delay={0.1}
+            className="mb-10 flex flex-wrap items-center justify-center gap-3 sm:mb-14"
+          >
             {categories.map((category) => (
               <button
                 key={category}
@@ -264,12 +162,14 @@ const Project = () => {
                 {category}
               </button>
             ))}
-          </div>
+          </FadeIn>
 
           {/* Cards */}
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {filteredPortfolios.map((portfolio) => (
-              <BrowserCard key={portfolio.id} portfolio={portfolio} />
+            {filteredPortfolios.map((portfolio, i) => (
+              <FadeIn key={portfolio.id} delay={(i % 3) * 0.1}>
+                <BrowserCard portfolio={portfolio} />
+              </FadeIn>
             ))}
           </div>
         </div>

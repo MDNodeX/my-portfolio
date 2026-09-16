@@ -12,9 +12,8 @@ export const userSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload;
       state.isLoggedIn = true;
-      state.user = action.payload;
     },
-    removeUser: (state, action) => {
+    removeUser: (state) => {
       state.isLoggedIn = false;
       state.user = {};
     },
