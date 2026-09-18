@@ -42,7 +42,7 @@ const socialLinks = [
 export default function ContactSection() {
   return (
     <section className="relative min-h-screen w-full flex items-center justify-center lg:py-20 py-10 px-5 lg:px-10 overflow-hidden bg-primary">
-      {/* Dynamic Background */}
+      {/* Dynamic Background
       <div className="absolute inset-0 z-0">
         <img
           src={bgContact}
@@ -51,7 +51,7 @@ export default function ContactSection() {
           referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#020618]/95 via-[#020618]/80 to-[#c8102e]/20" />
-      </div>
+      </div> */}
 
       <div className="relative z-10 max-w-7xl w-full grid lg:grid-cols-12 gap-10 items-center">
         {/* Left Column: Context & Info (7/12 area) */}

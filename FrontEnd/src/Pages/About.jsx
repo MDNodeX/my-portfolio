@@ -395,37 +395,17 @@ const About = () => {
   return (
     <>
       {/* page about */}
-      <section
-        className="relative w-full lg:py-15 py-10 overflow-hidden bg-cover bg-center"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(18, 63, 100, 0.7), rgba(0, 20, 73, 0.7)), url(${aboutpagehead})`,
-        }}
-      >
-        <FadeIn className="relative z-10 max-w-7xl mx-auto px-4 text-center">
-          <h1 className="lg:text-7xl text-5xl font-black text-white flex items-center justify-center gap-2">
-            About <div className="text-[#c8102e]">Us</div>
-          </h1>
-        </FadeIn>
-      </section>
-
-      {/* about section */}
       <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
         {/* Ambient background glow — matches your other sections */}
         <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
         <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
 
-        {/* Faint grid texture */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-
-        <FadeIn className="relative mx-auto max-w-6xl">
+        <FadeIn className="relative z-10 max-w-7xl  mx-auto text-center ">
+          <h1 className="lg:text-7xl text-5xl font-black text-white flex items-center justify-center gap-2">
+            About <div className="text-[#00CAA0]">Us</div>
+          </h1>
+        </FadeIn>
+        <FadeIn className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
             {/* Image */}
             <div
@@ -451,9 +431,6 @@ const About = () => {
                 Hi, I'm WP Hridoy — a professional Freelancer, Web Developer &
                 WordPress Expert from Bangladesh with 6+ years of experience. I
                 specialize in creating modern, responsive, and optimized
-                websites tailored to client needs. Passionate about learning and
-                improving every day, I aim to deliver top-quality results with
-                lifetime support you can rely on.
               </p>
 
               <ul className="flex flex-col gap-3">
@@ -486,24 +463,7 @@ const About = () => {
             </div>
           </div>
         </FadeIn>
-      </section>
-
-      <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
-        {/* Ambient background glow — matches your other sections */}
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
-
-        {/* Faint grid texture */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-
-        <div className="relative mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat, i) => (
               <FadeIn key={stat.label} delay={i * 0.08}>
@@ -512,24 +472,7 @@ const About = () => {
             ))}
           </div>
         </div>
-      </section>
-
-      <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
-        {/* Ambient background glow — matches your other sections */}
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
-
-        {/* Faint grid texture */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-
-        <div className="relative mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
           {/* Core Stack */}
           <SectionEyebrow>Core Stack</SectionEyebrow>
 
@@ -538,18 +481,16 @@ const About = () => {
               const Icon = tech.icon;
               return (
                 <FadeIn key={tech.name} delay={(i % 6) * 0.06}>
-                <div
-                  className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/[0.06] bg-[#091424] p-6 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)]"
-                >
-                  <div
-                    className={`flex h-14 w-14 items-center justify-center rounded-full ${tech.bg} ${tech.color} transition-transform duration-300 group-hover:scale-110`}
-                  >
-                    <Icon className="h-6 w-6" />
+                  <div className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/[0.06] bg-[#091424] p-6 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)]">
+                    <div
+                      className={`flex h-14 w-14 items-center justify-center rounded-full ${tech.bg} ${tech.color} transition-transform duration-300 group-hover:scale-110`}
+                    >
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    <span className="text-sm font-bold text-white">
+                      {tech.name}
+                    </span>
                   </div>
-                  <span className="text-sm font-bold text-white">
-                    {tech.name}
-                  </span>
-                </div>
                 </FadeIn>
               );
             })}
@@ -566,74 +507,56 @@ const About = () => {
                 const Icon = item.icon;
                 return (
                   <FadeIn key={item.name} delay={(i % 4) * 0.08}>
-                  <div
-                    className="group flex items-center gap-3 rounded-2xl border border-white/[0.06] bg-[#091424] p-5 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)]"
-                  >
-                    <div
-                      className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${item.bg} ${item.color} transition-transform duration-300 group-hover:scale-110`}
-                    >
-                      <Icon className="h-5 w-5" />
+                    <div className="group flex items-center gap-3 rounded-2xl border border-white/[0.06] bg-[#091424] p-5 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)]">
+                      <div
+                        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${item.bg} ${item.color} transition-transform duration-300 group-hover:scale-110`}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <span className="text-sm font-semibold text-white sm:text-base">
+                        {item.name}
+                      </span>
                     </div>
-                    <span className="text-sm font-semibold text-white sm:text-base">
-                      {item.name}
-                    </span>
-                  </div>
                   </FadeIn>
                 );
               })}
             </div>
           </div>
         </div>
-      </section>
-
-      <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
-        {/* Ambient background glow — matches your other sections */}
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
-
-        {/* Faint grid texture */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-
-        <div className="relative mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16">
             {/* Left column */}
             <FadeIn direction="left">
-            <div ref={leftColRef}>
-              <div className="mb-5 flex items-center gap-3">
-                <span className="h-px w-8 bg-emerald-400" />
-                <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">
-                  Our Approach
-                </span>
+              <div ref={leftColRef}>
+                <div className="mb-5 flex items-center gap-3">
+                  <span className="h-px w-8 bg-emerald-400" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">
+                    Our Approach
+                  </span>
+                </div>
+
+                <h2 className="text-3xl font-black leading-tight text-white sm:text-4xl lg:text-5xl">
+                  How We Drive Innovation & Growth
+                </h2>
+
+                <p className="mt-5 text-base leading-relaxed text-slate-400 sm:text-lg">
+                  We follow a proven process to ensure the success of every
+                  project. We start by understanding your business and goals,
+                  create a custom strategy, and work closely with you
+                  throughout.
+                </p>
+
+                <div className="mt-8 flex flex-col gap-6">
+                  {progressSteps.map((step) => (
+                    <ProgressBar
+                      key={step.label}
+                      label={step.label}
+                      percent={step.percent}
+                      inView={inView}
+                    />
+                  ))}
+                </div>
               </div>
-
-              <h2 className="text-3xl font-black leading-tight text-white sm:text-4xl lg:text-5xl">
-                How We Drive Innovation & Growth
-              </h2>
-
-              <p className="mt-5 text-base leading-relaxed text-slate-400 sm:text-lg">
-                We follow a proven process to ensure the success of every
-                project. We start by understanding your business and goals,
-                create a custom strategy, and work closely with you throughout.
-              </p>
-
-              <div className="mt-8 flex flex-col gap-6">
-                {progressSteps.map((step) => (
-                  <ProgressBar
-                    key={step.label}
-                    label={step.label}
-                    percent={step.percent}
-                    inView={inView}
-                  />
-                ))}
-              </div>
-            </div>
             </FadeIn>
 
             {/* Right column — accordion */}
@@ -652,25 +575,7 @@ const About = () => {
             </FadeIn>
           </div>
         </div>
-      </section>
-
-      {/* hero section */}
-      <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
-        {/* Ambient background glow — matches your other sections */}
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
-
-        {/* Faint grid texture */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-
-        <FadeIn className="relative mx-auto max-w-6xl text-center">
+        <FadeIn className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center py-20">
           <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
             Where I Work
           </h2>
@@ -684,17 +589,15 @@ const About = () => {
               const Icon = platform.icon;
               return (
                 <FadeIn key={platform.name} delay={(i % 5) * 0.06}>
-                <div
-                  className="group flex h-[90px] w-[190px] items-center justify-center gap-2.5 rounded-2xl border border-transparent bg-white px-6 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/50 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.4)]"
-                >
-                  <Icon
-                    className="h-6 w-6 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-                    style={{ color: platform.color }}
-                  />
-                  <span className="text-lg font-bold text-slate-800">
-                    {platform.name}
-                  </span>
-                </div>
+                  <div className="group flex h-[90px] w-[190px] items-center justify-center gap-2.5 rounded-2xl border border-transparent bg-white px-6 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/50 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.4)]">
+                    <Icon
+                      className="h-6 w-6 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                      style={{ color: platform.color }}
+                    />
+                    <span className="text-lg font-bold text-slate-800">
+                      {platform.name}
+                    </span>
+                  </div>
                 </FadeIn>
               );
             })}

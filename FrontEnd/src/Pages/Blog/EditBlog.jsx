@@ -37,8 +37,9 @@ const EditBlog = () => {
       credentials: "include",
     },
   );
+
   const { data: blogData, loading: blogLoading } = useFetch(
-    `${getEnv("VITE_API_BASE_URL")}/backend/blog/getall`,
+    `${getEnv("VITE_API_BASE_URL")}/backend/blog/get/${blogid}`,
     {
       method: "GET",
       credentials: "include",
@@ -48,6 +49,7 @@ const EditBlog = () => {
 
   const [filePreview, setPreview] = useState();
   const [file, setfile] = useState();
+
   const formSchema = z.object({
     category: z.string().nonempty("Please select a category"),
     title: z.string().min(3, "Title must be at least 3 characters"),
@@ -57,6 +59,7 @@ const EditBlog = () => {
       .min(3, "Blog Content must be at least 3 characters"),
   });
 
+  // This must come before the useEffects
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -71,22 +74,29 @@ const EditBlog = () => {
 
   useEffect(() => {
     if (blogTitle) {
-      const slug = slugify(blogTitle, { lower: true });
+      const slug = slugify(blogTitle, {
+        lower: true,
+      });
+
       form.setValue("slug", slug);
     }
   }, [blogTitle, form]);
 
   useEffect(() => {
-    if (blogData?.data?.length) {
-      const blog = blogData.data[0]; // get the first blog from the array
+    const blog = blogData?.data;
 
-      form.setValue("category", blog.category_id);
-      form.setValue("title", blog.title);
-      form.setValue("slug", blog.slug);
-      form.setValue("blogContent", blog.content);
-      setPreview(blog.featured_image);
-    }
+    if (!blog) return;
+
+    form.reset({
+      category: String(blog.category_id ?? ""),
+      title: blog.title ?? "",
+      slug: blog.slug ?? "",
+      blogContent: blog.content ?? "",
+    });
+
+    setPreview(blog.featured_image || null);
   }, [blogData, form]);
+
   // handler
   async function onSubmit(values) {
     const formData = new FormData();
@@ -233,14 +243,6 @@ const EditBlog = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Blog Content</FormLabel>
-                      {/* <Editor
-                        initialData={field.value}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          form.setValue("blogContent", data);
-                          field.onChange(data); // ✅ Update form
-                        }}
-                      /> */}
                       <Editor
                         initialData={field.value}
                         onChange={(event, editor) => {

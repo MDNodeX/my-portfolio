@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useSpring } from "framer-motion";
+import FadeIn from "@/components/motion/FadeIn";
 import {
   GitBranch,
   Star,
@@ -9,8 +10,26 @@ import {
   Code2,
   Cpu,
   Sparkles,
+  Briefcase,
+  Clock,
+  Calendar,
 } from "lucide-react";
 
+// import {
+//
+//
+//
+//   Check,
+//   Cpu,
+//   Zap,
+//   Bot,
+//   TrendingUp,
+//   Palette,
+//   Sparkles,
+//   ChevronDown,
+//   ShoppingBag,
+//   Code2,
+// } from "lucide-react";
 /**
  * ------------------------------------------------------------------
  *  Hero — left content column + LiveBuildPanel (animated code editor)
@@ -229,6 +248,142 @@ const STATS = [
     Icon: Activity,
   },
 ];
+
+// ----project completed stat -------------------
+// Counts from 0 -> target once `start` becomes true — same approach as
+// the StatsSection count-up, reused here for the percentage labels.
+function useCountUp(target, start, duration = 1000) {
+  const [value, setValue] = useState(0);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    if (!start) return;
+
+    const startTime = performance.now();
+
+    const tick = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.round(eased * target));
+
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [start, target, duration]);
+
+  return value;
+}
+
+function ProgressBar({ label, percent, inView }) {
+  const count = useCountUp(percent, inView);
+
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between text-sm">
+        <span className="font-semibold text-white">{label}</span>
+        <span className="font-semibold text-emerald-400">{count}%</span>
+      </div>
+      <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-all duration-1000 ease-out"
+          style={{ width: inView ? `${percent}%` : "0%" }}
+        />
+      </div>
+    </div>
+  );
+}
+const stats = [
+  {
+    value: 84,
+    suffix: "+",
+    label: "Jobs Completed",
+    subtext: "Delivered on Upwork",
+    icon: Briefcase,
+    color: "text-blue-400",
+    bg: "bg-blue-500/15",
+  },
+  {
+    value: 3242,
+    suffix: "+",
+    label: "Hours Worked",
+    subtext: "Billed to clients",
+    icon: Clock,
+    color: "text-violet-400",
+    bg: "bg-violet-500/15",
+  },
+  {
+    value: 100,
+    suffix: "%",
+    label: "Job Success",
+    subtext: "Top Rated Plus",
+    icon: Star,
+    color: "text-emerald-400",
+    bg: "bg-emerald-400/15",
+  },
+  {
+    value: 6,
+    suffix: "+",
+    label: "Years Experience",
+    subtext: "Building since 2020",
+    icon: Calendar,
+    color: "text-amber-400",
+    bg: "bg-amber-500/15",
+  },
+];
+function StatCard({ stat }) {
+  const Icon = stat.icon;
+  const cardRef = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const count = useCountUp(stat.value, inView);
+
+  return (
+    <div
+      ref={cardRef}
+      className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[#091424] p-6 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_10px_40px_-15px_rgba(16,185,129,0.35)] sm:p-7"
+    >
+      <div
+        className={`flex h-11 w-11 items-center justify-center rounded-xl ${stat.bg} ${stat.color} transition-transform duration-300 group-hover:scale-110`}
+      >
+        <Icon className="h-5 w-5" strokeWidth={2} />
+      </div>
+
+      <div className="mt-5 text-4xl font-extrabold text-white sm:text-5xl">
+        {count.toLocaleString()}
+        {stat.suffix}
+      </div>
+
+      <div className="mt-2 text-base font-semibold text-white">
+        {stat.label}
+      </div>
+      <div className="mt-0.5 text-sm text-slate-400">{stat.subtext}</div>
+    </div>
+  );
+}
+// ----project completed stat -------------------
 
 // ---- Terminal / deployment log lines ---------------------------------
 const LOGS = [
@@ -818,7 +973,7 @@ export default function Hero({
   return (
     <section
       id="hero"
-      className="relative overflow-hidden border-b border-gray-100 py-10 lg:py-16"
+      className="relative overflow-hidden py-10 lg:py-16"
       //   style={{
       //     background: `
       //   radial-gradient(circle at 12% 45%, rgba(62, 124, 177, 0.18) 0%, transparent 45%),
@@ -853,7 +1008,7 @@ export default function Hero({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
-              className="mb-6 lg:text-[80px] md:text-9xl font-extrabold leading-[1.05] tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400 sm:text-5xl lg:text-6xl"
+              className="mb-6 lg:text-[70px] md:text-9xl font-extrabold leading-[1.05] tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400 sm:text-5xl lg:text-6xl"
             >
               We Formulation Codes That{" "}
               <span
@@ -885,7 +1040,7 @@ export default function Hero({
               <button
                 onClick={() => onScrollToSection("booking")}
                 id="hero-book-cta"
-                className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-brand-crimson px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-white shadow-md transition-all hover:scale-[1.02] hover:bg-brand-crimson-hover hover:shadow-lg sm:w-auto"
+                className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-gradient-to-r from-emerald-400 to-teal-500 px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-[#04342C] shadow-md transition-all hover:scale-[1.02] hover:from-emerald-300 hover:to-teal-400 hover:shadow-lg sm:w-auto"
               >
                 <span>Start Your Project</span>
                 <ArrowRight className="h-4 w-4" />
@@ -922,6 +1077,17 @@ export default function Hero({
 
           {/* coding animation editor */}
           <LiveBuildPanel />
+        </div>
+      </div>
+      <div className="pt-15">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {stats.map((stat, i) => (
+              <FadeIn key={stat.label} delay={i * 0.08}>
+                <StatCard stat={stat} />
+              </FadeIn>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -155,24 +155,105 @@ export const getAllBlogs = async (req, res, next) => {
 // NOTE: this duplicates updateBlog below, which already does this
 // correctly. Worth consolidating into one endpoint once you confirm
 // which one your routes actually use.
+// export const editBlog = async (req, res, next) => {
+//   try {
+//     const { id } = req.params;
+//     const {
+//       author_id,
+//       category_id,
+//       title,
+//       slug,
+//       content,
+//       status,
+//       meta_title,
+//       meta_description,
+//     } = req.body;
+
+//     const [existingBlog] = await mySqlDB.query(
+//       "SELECT * FROM blogs WHERE id = ?",
+//       [id],
+//     );
+//     if (existingBlog.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Blog not found",
+//       });
+//     }
+
+//     // Check slug uniqueness (exclude current blog)
+//     if (slug) {
+//       const [slugCheck] = await mySqlDB.query(
+//         "SELECT id FROM blogs WHERE slug = ? AND id != ?",
+//         [slug, id],
+//       );
+//       if (slugCheck.length > 0) {
+//         return res.status(400).json({
+//           success: false,
+//           message: "Slug already exists",
+//         });
+//       }
+//     }
+
+//     // Use raw HTML content as-is
+//     const safeContent = content || existingBlog[0].content;
+
+//     let featuredImage = existingBlog[0].featured_image;
+
+//     // Upload new image if provided
+//     if (req.file) {
+//       const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+//         folder: "swiftweb/featuredImage",
+//         resource_type: "auto",
+//       });
+//       featuredImage = uploadResult.secure_url;
+//       fs.unlinkSync(req.file.path);
+//     }
+
+//     // Update blog in DB
+//     await mySqlDB.query(
+//       `UPDATE blogs SET
+//         author_id = ?,
+//         category_id = ?,
+//         title = ?,
+//         slug = ?,
+//         featured_image = ?,
+//         content = ?,
+//         status = ?,
+//         meta_title = ?,
+//         meta_description = ?,
+//         updated_at = NOW()
+//       WHERE id = ?`,
+//       [
+//         author_id || existingBlog[0].author_id,
+//         category_id || existingBlog[0].category_id,
+//         title || existingBlog[0].title,
+//         slug || existingBlog[0].slug,
+//         featuredImage,
+//         safeContent,
+//         status || existingBlog[0].status,
+//         meta_title || existingBlog[0].meta_title,
+//         meta_description || existingBlog[0].meta_description,
+//         id,
+//       ],
+//     );
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Blog updated successfully",
+//     });
+//   } catch (error) {
+//     next(handleError(res, 500, error.message));
+//   }
+// };
 export const editBlog = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const {
-      author_id,
-      category_id,
-      title,
-      slug,
-      content,
-      status,
-      meta_title,
-      meta_description,
-    } = req.body;
 
     const [existingBlog] = await mySqlDB.query(
       "SELECT * FROM blogs WHERE id = ?",
       [id],
     );
+
     if (existingBlog.length === 0) {
       return res.status(404).json({
         success: false,
@@ -180,66 +261,9 @@ export const editBlog = async (req, res, next) => {
       });
     }
 
-    // Check slug uniqueness (exclude current blog)
-    if (slug) {
-      const [slugCheck] = await mySqlDB.query(
-        "SELECT id FROM blogs WHERE slug = ? AND id != ?",
-        [slug, id],
-      );
-      if (slugCheck.length > 0) {
-        return res.status(400).json({
-          success: false,
-          message: "Slug already exists",
-        });
-      }
-    }
-
-    // Use raw HTML content as-is
-    const safeContent = content || existingBlog[0].content;
-
-    let featuredImage = existingBlog[0].featured_image;
-
-    // Upload new image if provided
-    if (req.file) {
-      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-        folder: "swiftweb/featuredImage",
-        resource_type: "auto",
-      });
-      featuredImage = uploadResult.secure_url;
-      fs.unlinkSync(req.file.path);
-    }
-
-    // Update blog in DB
-    await mySqlDB.query(
-      `UPDATE blogs SET 
-        author_id = ?, 
-        category_id = ?, 
-        title = ?, 
-        slug = ?, 
-        featured_image = ?, 
-        content = ?, 
-        status = ?, 
-        meta_title = ?, 
-        meta_description = ?,
-        updated_at = NOW()
-      WHERE id = ?`,
-      [
-        author_id || existingBlog[0].author_id,
-        category_id || existingBlog[0].category_id,
-        title || existingBlog[0].title,
-        slug || existingBlog[0].slug,
-        featuredImage,
-        safeContent,
-        status || existingBlog[0].status,
-        meta_title || existingBlog[0].meta_title,
-        meta_description || existingBlog[0].meta_description,
-        id,
-      ],
-    );
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "Blog updated successfully",
+      data: existingBlog[0],
     });
   } catch (error) {
     next(handleError(res, 500, error.message));

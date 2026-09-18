@@ -1,14 +1,12 @@
 import React, { useState, useMemo } from "react";
-import Loading from "@/components/Loading";
 import { getEnv } from "@/helpers/getEnv";
 import BlogCard from "@/components/BlogCard";
 import { useFetch } from "@/hooks/useFetch";
+import LineAnimation from "@/components/ui/lineanimation";
 import FadeIn from "@/components/motion/FadeIn";
 
 export default function BlogPage() {
-  // const { slug } = useParams();
   const [activeCategory, setActiveCategory] = useState("All");
-
   const {
     data: blogData,
     loading,
@@ -17,12 +15,10 @@ export default function BlogPage() {
     method: "GET",
     credentials: "include",
   });
-
   const { data: categoryData } = useFetch(
     `${getEnv("VITE_API_BASE_URL")}/backend/category/getall`,
     { method: "GET" },
   );
-
   // Map category_id -> category object, so we can resolve names for each blog
   const categoryMap = useMemo(() => {
     const map = {};
@@ -56,33 +52,21 @@ export default function BlogPage() {
     );
   }, [blogData, activeCategory, categoryMap]);
 
-  if (loading) return <Loading />;
-
   return (
     <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
       {/* Ambient background glow — matches your other sections */}
       <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
       <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
 
-      {/* Faint grid texture */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
-
-      <div className="relative mx-auto max-w-7xl">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <FadeIn className="mb-10 text-center sm:mb-14">
+        <FadeIn className=" text-center sm:mb-5">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Our Blog
           </h2>
-          <p className="mx-auto mt-3 max-w-md text-sm text-slate-400 sm:text-base">
-            Insights, guides, and updates from our team.
-          </p>
+          <div className="flex w-full justify-center">
+            <LineAnimation />
+          </div>
         </FadeIn>
 
         {/* Category filter menu */}

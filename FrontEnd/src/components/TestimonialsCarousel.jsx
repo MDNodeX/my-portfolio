@@ -59,24 +59,7 @@ export default function TestimonialsCarousel() {
   const scrollItems = [...testimonials, ...testimonials];
 
   return (
-    <section
-      id="testimonials"
-      className="relative overflow-hidden bg-[#07111E] py-24"
-    >
-      {/* Ambient background glow — matches your other sections */}
-      <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
-
-      {/* Faint grid texture */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
-
+    <section id="testimonials" className="relative overflow-hidden pt-20 pb-0">
       <div className="container relative z-10 mx-auto px-6">
         <div className="mx-auto mb-16 max-w-3xl text-center">
           <motion.div

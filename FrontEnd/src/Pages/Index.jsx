@@ -1,19 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import ContactForm from "@/components/contact-form";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import Serviceboxes from "@/components/ui/Serviceboxes";
 import LineAnimation from "@/components/ui/lineanimation";
 import { motion } from "motion/react";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Clock,
-  Linkedin,
-  Twitter,
-  Github,
-  Instagram,
-  Send,
-} from "lucide-react";
+import { getEnv } from "@/helpers/getEnv";
+import BlogCard from "@/components/BlogCard";
+import { useFetch } from "@/hooks/useFetch";
+import FadeIn from "@/components/motion/FadeIn";
+import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import {
   FaFacebookF,
   FaLinkedinIn,
@@ -23,24 +18,7 @@ import {
   FaBehance,
   FaInstagram,
 } from "react-icons/fa6";
-
-// import { Button } from "@/components/ui/button";
-import { FaServicestack } from "react-icons/fa";
-// import { RouteContact } from "@/helpers/RouteName";
-
 import Hero from "@/components/Hero.jsx";
-
-import { useDispatch, useSelector } from "react-redux";
-// import { fetchBlogs } from "@/redux/blog/blog.slice";
-import BlogCard from "@/components/BlogCard.jsx";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-// import Loading from "@/components/Loading";
 
 const contactItems = [
   {
@@ -86,12 +64,51 @@ const socialLinks = [
 //contact form fungtion
 
 const Index = () => {
-  // const dispatch = useDispatch();
-  // const { blogs } = useSelector((state) => state.blog);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const {
+    data: blogData,
+    loading,
+    error,
+  } = useFetch(`${getEnv("VITE_API_BASE_URL")}/backend/blog/blogs`, {
+    method: "GET",
+    credentials: "include",
+  });
+  const { data: categoryData } = useFetch(
+    `${getEnv("VITE_API_BASE_URL")}/backend/category/getall`,
+    { method: "GET" },
+  );
+  // Map category_id -> category object, so we can resolve names for each blog
+  const categoryMap = useMemo(() => {
+    const map = {};
+    categoryData?.categories?.forEach((cat) => {
+      map[cat.category_id || cat.id] = cat;
+    });
+    return map;
+  }, [categoryData]);
 
-  // useEffect(() => {
-  //   dispatch(fetchBlogs());
-  // }, [dispatch]);
+  // Helper: get a display-friendly category name for a blog,
+  // whether the blog stores category_id, categoryId, or a nested category object
+  const getCategoryName = (blog) => {
+    if (blog.category?.name) return blog.category.name; // nested object case
+    if (blog.category_name) return blog.category_name; // flat field case
+    const id = blog.category_id || blog.categoryId;
+    return categoryMap[id]?.name || "Uncategorized";
+  };
+
+  // Build filter list from actual categories endpoint (preferred, always accurate)
+  const categories = useMemo(() => {
+    const names = categoryData?.categories?.map((cat) => cat.name) || [];
+    return ["All", ...names];
+  }, [categoryData]);
+
+  // Filter blogs by resolved category name
+  const filteredBlogs = useMemo(() => {
+    if (!blogData?.data?.length) return [];
+    if (activeCategory === "All") return blogData.data;
+    return blogData.data.filter(
+      (blog) => getCategoryName(blog) === activeCategory,
+    );
+  }, [blogData, activeCategory, categoryMap]);
   // if (Loading) return <Loading />;
   return (
     <>
@@ -99,33 +116,76 @@ const Index = () => {
       <div className="animate-fade-in">
         <Hero />
       </div>
-
-      {/* blog post */}
-      {/* <section>
-        <BlogCard limit={3} blogs={blogs?.slice(0, 3)} />
-      </section> */}
-
-      {/* testimonials section */}
-      <section className="">
-        <TestimonialsCarousel />
+      {/* ---serviceboxes--- */}
+      <section>
+        <Serviceboxes />
       </section>
+      {/* blog post and testimonials section */}
+      <section className="bg-[#07111E]">
+        {/* Ambient background glow — matches your other sections */}
+        <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
+        <TestimonialsCarousel />
+        {/* ---blogs--- */}
+        <div className=" px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {/* Heading */}
+            <FadeIn className=" text-center sm:mb-5">
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Our Blog
+              </h2>
+              <div className="flex w-full justify-center">
+                <LineAnimation />
+              </div>
+            </FadeIn>
+
+            {/* Category filter menu */}
+            <FadeIn
+              delay={0.1}
+              className="mb-10 flex flex-wrap items-center justify-center gap-3 sm:mb-14"
+            >
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 ${
+                    activeCategory === cat
+                      ? "bg-emerald-400 text-[#04342C] shadow-[0_8px_24px_-8px_rgba(16,185,129,0.6)]"
+                      : "border border-white/10 bg-white/[0.03] text-slate-300 hover:border-emerald-400/30 hover:text-white"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </FadeIn>
+
+            {/* Cards */}
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {filteredBlogs.length > 0 ? (
+                filteredBlogs.map((blog) => (
+                  <BlogCard
+                    key={blog.id}
+                    blog={blog}
+                    categoryName={getCategoryName(blog)}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center text-slate-400">
+                  Data Not Found!
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* contact section */}
       <section className="relative overflow-hidden bg-[#07111E] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
         {/* Ambient background glow — matches your other sections */}
         <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
         <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/5 blur-[100px]" />
 
-        {/* Faint grid texture */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
-
-        <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-10">
+        <div className="relative mx-auto grid max-w-7xl px-4 sm:px-6 lg:px-8 grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-10">
           {/* Left Column: Context & Info */}
           <div className="space-y-10 lg:col-span-7">
             <div className="space-y-6">
@@ -219,19 +279,6 @@ const Index = () => {
               <ContactForm />
             </motion.div>
           </div>
-        </div>
-
-        <div className="w-full h-[400px] rounded-2xl overflow-hidden">
-          <iframe
-            src="https://www.google.com/maps?q=Dhaka,Bangladesh&output=embed"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Office Location"
-          />
         </div>
       </section>
     </>

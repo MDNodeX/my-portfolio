@@ -32,7 +32,7 @@ const SearchResult = () => {
         }}
       />
 
-      <div className="relative mx-auto max-w-7xl">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 flex items-center gap-3 border-b border-white/[0.06] pb-5">
           <h2 className="text-2xl font-bold text-white">
             Search Result For: <span className="text-emerald-400">{q}</span>

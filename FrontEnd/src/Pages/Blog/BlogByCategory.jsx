@@ -20,7 +20,7 @@ const BlogByCategory = () => {
 
   return (
     <>
-      <section className="lg:px-0 px-6 py-10 max-w-7xl mx-auto">
+      <section className="lg:px-0 py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3 text-2xl font-bold border-b text-violet-500 pb-3 mb-5">
           <BiSolidCategoryAlt />
           <h2>{blogData?.category?.name}</h2>
