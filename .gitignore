@@ -7,7 +7,6 @@ BackEnd/node_modules/
 # Environment variables
 .env
 .env.*
-!.env.example
 FrontEnd/.env
 BackEnd/.env
 
